@@ -12,7 +12,6 @@ make -j8
 openocd -f interface/stlink.cfg -c "transport select hla_swd" -f target/stm32l4x.cfg 
 ```
 ```bash
-(gdb) quit
 arm-none-eabi-gdb bin/miyo-reader-firmware 
 (gdb) target remote localhost:3333
 (gdb) monitor reset halt
