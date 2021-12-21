@@ -427,7 +427,7 @@ uint32_t BSP_PB_GetState(Button_TypeDef Button)
 //   I2Cx_MspInit(i2c_handler);
 //   HAL_I2C_Init(i2c_handler);
   
-//   /**Configure Analogue filter */
+//   /**Configure Analog filter */
 //   HAL_I2CEx_ConfigAnalogFilter(i2c_handler, I2C_ANALOGFILTER_ENABLE);  
 // }
 
