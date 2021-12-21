@@ -21,9 +21,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 add_executable(${MIYO_READER} "")
 ##########################################################################
 add_subdirectory(external/cmsis)
+add_subdirectory(external/cmsis_device_l4)
 ##########################################################################
 target_include_directories(${MIYO_READER} PUBLIC include)
-target_include_directories(${MIYO_READER} PUBLIC external/cmsis_device_l4/current/Include)
 target_include_directories(${MIYO_READER} PUBLIC external/stm32l4xx_hal_driver/current/Inc)
 ##########################################################################
 set(STM32L4xx_HAL_DRIVER_SRC_PATH external/stm32l4xx_hal_driver/current/Src)
