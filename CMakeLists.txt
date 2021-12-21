@@ -28,6 +28,7 @@ target_include_directories(${MIYO_READER} PUBLIC include)
 ##########################################################################
 target_sources(${MIYO_READER}
   PUBLIC
+
   src/main.c
   src/stm32l4s5i_iot01.c
   src/stm32l4xx_hal_msp.c
@@ -57,5 +58,6 @@ set_target_properties(
    -mcpu=cortex-m4 \
    -mfloat-abi=hard \
    -mfpu=fpv4-sp-d16 \
-   -Wl,--gc-sections")
+   -Wl,--gc-sections"
+)
 ##########################################################################
