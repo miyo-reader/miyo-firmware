@@ -1,79 +1,61 @@
 /**
-  ******************************************************************************
-  * @file    Templates/Src/main.c 
-  * @author  MCD Application Team
-  * @brief   Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2020 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ * miyo-firmware is a firmware for an open software/open hardware ebook reader.
+ * Copyright (C) 2021 Alexander Entinger, LXRobotics
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
-/* Includes ------------------------------------------------------------------*/
-#include "main.h"
+/**************************************************************************************
+ * INCLUDE
+ **************************************************************************************/
 
-/** @addtogroup STM32L4xx_HAL_Examples
-  * @{
-  */
+extern "C" {
+#include "stm32l4xx_hal.h"
+#include "stm32l4s5i_iot01.h"
+}
 
-/** @addtogroup Templates
-  * @{
-  */
+#include <hal++/DigitalOutPin.h>
 
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-/* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
-/* Private function prototypes -----------------------------------------------*/
-static void SystemClock_Config(void);
+/**************************************************************************************
+ * FUNCTION DECLARATION
+ **************************************************************************************/
 
-/* Private functions ---------------------------------------------------------*/
+static void SystemClock_Config();
 
-/**
-  * @brief  Main program
-  * @param  None
-  * @retval None
-  */
+/**************************************************************************************
+ * MAIN
+ **************************************************************************************/
+
 int main(void)
 {
-
-  /* STM32L4xx HAL library initialization:
-       - Configure the Flash prefetch, Flash preread and Buffer caches
-       - Systick timer is configured by default as source of time base, but user 
-             can eventually implement his proper time base source (a general purpose 
-             timer for example or other time source), keeping in mind that Time base 
-             duration should be kept 1ms since PPP_TIMEOUT_VALUEs are defined and 
-             handled in milliseconds basis.
-       - Low Level Initialization
-     */
   HAL_Init();
-
-  /* Configure the System clock to have a frequency of 80 MHz */
   SystemClock_Config();
 
+  miyo::hal::DigitalOutPin led_green(GPIOB, GPIO_PIN_14, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, 0, []{ __HAL_RCC_GPIOB_CLK_ENABLE(); });
 
-  /* Add your application code here
-     */
-  BSP_LED_Init(LED_GREEN);
-
-  /* Infinite loop */
-  while (1)
+  for(;;)
   {
-    BSP_LED_On(LED_GREEN);
-    HAL_Delay(100);
-    BSP_LED_Off(LED_GREEN);
+    led_green.set();
+    HAL_Delay(1000);
+    led_green.clr();
     HAL_Delay(100);
   }
-
-  BSP_LED_DeInit(LED_GREEN);
 }
+
+/**************************************************************************************
+ * FUNCTION DEFINITION
+ **************************************************************************************/
 
 /**
   * @brief  System Clock Configuration

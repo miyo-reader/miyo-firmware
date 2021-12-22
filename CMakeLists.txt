@@ -29,10 +29,14 @@ target_include_directories(${MIYO_READER} PUBLIC include)
 target_sources(${MIYO_READER}
   PUBLIC
 
-  src/main.c
+  src/hal++/DigitalOutPin.cpp
+
+  src/main.cpp
   src/stm32l4s5i_iot01.c
   src/stm32l4xx_hal_msp.c
   src/stm32l4xx_it.c
+  src/syscalls.c
+  src/sysmem.c
   src/system_stm32l4xx.c
 
   startup/startup_stm32l4s5aiix.s
