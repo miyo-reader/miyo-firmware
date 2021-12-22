@@ -33,6 +33,7 @@ target_sources(${MIYO_READER}
   src/stm32l4s5i_iot01.c
   src/stm32l4xx_hal_msp.c
   src/stm32l4xx_it.c
+  src/syscalls.c
   src/sysmem.c
   src/system_stm32l4xx.c
 
