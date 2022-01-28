@@ -65,3 +65,9 @@ set_target_properties(
    -Wl,--gc-sections"
 )
 ##########################################################################
+add_custom_target(upload
+  COMMENT "Uploading miyo-reader-firmware to target ..."
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+  COMMAND openocd -f tools/openocd/openocd.cfg
+)
+##########################################################################
