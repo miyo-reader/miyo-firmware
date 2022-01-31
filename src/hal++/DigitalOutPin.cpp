@@ -42,18 +42,13 @@ DigitalOutPin::DigitalOutPin(GPIO_TypeDef * type,
                              std::function<void()> const enable_peripheral_clock)
 : _type{type}
 , _pin{pin}
+, _mode{mode}
+, _pull{pull}
+, _speed{speed}
+, _alternate{alternate}
+, _enable_peripheral_clock{enable_peripheral_clock}
 {
-  enable_peripheral_clock();
 
-  GPIO_InitTypeDef gpio_init_structure;
-
-  gpio_init_structure.Pin       = pin;
-  gpio_init_structure.Mode      = mode;
-  gpio_init_structure.Pull      = pull;
-  gpio_init_structure.Speed     = speed;
-  gpio_init_structure.Alternate = alternate;
-  
-  HAL_GPIO_Init(type, &gpio_init_structure);
 }
 
 DigitalOutPin::~DigitalOutPin()
@@ -64,6 +59,21 @@ DigitalOutPin::~DigitalOutPin()
 /**************************************************************************************
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
+
+void DigitalOutPin::init()
+{
+  _enable_peripheral_clock();
+
+  GPIO_InitTypeDef gpio_init_structure;
+
+  gpio_init_structure.Pin       = _pin;
+  gpio_init_structure.Mode      = _mode;
+  gpio_init_structure.Pull      = _pull;
+  gpio_init_structure.Speed     = _speed;
+  gpio_init_structure.Alternate = _alternate;
+
+  HAL_GPIO_Init(_type, &gpio_init_structure);
+}
 
 void DigitalOutPin::set()
 {

@@ -58,6 +58,7 @@ public:
                 std::function<void()> const enable_peripheral_clock);
   virtual ~DigitalOutPin();
 
+  virtual void init() override;
 
   virtual void set() override;
   virtual void clr() override;
@@ -66,7 +67,8 @@ public:
 private:
 
   GPIO_TypeDef * _type;
-  uint32_t _pin;
+  uint32_t _pin, _mode, _pull, _speed, _alternate;
+  std::function<void()> _enable_peripheral_clock;
 
 };
 

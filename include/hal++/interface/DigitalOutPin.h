@@ -37,6 +37,8 @@ public:
 
   virtual ~DigitalOutPin() { }
 
+  virtual void init() = 0;
+
   virtual void set() = 0;
   virtual void clr() = 0;
 
