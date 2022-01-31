@@ -16,23 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDE_HAL_DIGITALOUTPIN_H_
-#define INCLUDE_HAL_DIGITALOUTPIN_H_
-
-/**************************************************************************************
- * NAMESPACE
- **************************************************************************************/
-
-#include <hal++/interface/DigitalOutPin.h>
-
-#include <cstdint>
-
-#include <functional>
-
-extern "C" {
-#include "stm32l4xx_hal.h"
-}
-
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -41,41 +24,39 @@ namespace miyo::hal
 {
 
 /**************************************************************************************
- * CLASS DECLARATION
+ * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-class DigitalOutPin : public interface::DigitalOutPin
+template <GPIO_TypeDef * PORT(), uint32_t pin, uint32_t mode, uint32_t pull, uint32_t speed, uint32_t alternate, void enable_peripheral_clock()>
+void DigitalOutPin<PORT, pin, mode, pull, speed, alternate, enable_peripheral_clock>::init()
 {
+  enable_peripheral_clock();
 
-public:
+  GPIO_InitTypeDef gpio_init_structure;
 
-  DigitalOutPin(GPIO_TypeDef * type,
-                uint32_t const pin,
-                uint32_t const mode,
-                uint32_t const pull,
-                uint32_t const speed,
-                uint32_t const alternate,
-                std::function<void()> const enable_peripheral_clock);
-  virtual ~DigitalOutPin();
+  gpio_init_structure.Pin       = pin;
+  gpio_init_structure.Mode      = mode;
+  gpio_init_structure.Pull      = pull;
+  gpio_init_structure.Speed     = speed;
+  gpio_init_structure.Alternate = alternate;
 
-  virtual void init() override;
+  HAL_GPIO_Init(PORT(), &gpio_init_structure);
+}
 
-  virtual void set() override;
-  virtual void clr() override;
+template <GPIO_TypeDef * PORT(), uint32_t pin, uint32_t mode, uint32_t pull, uint32_t speed, uint32_t alternate, void enable_peripheral_clock()>
+void DigitalOutPin<PORT, pin, mode, pull, speed, alternate, enable_peripheral_clock>::set()
+{
+  HAL_GPIO_WritePin(PORT(), pin, GPIO_PIN_SET);
+}
 
-
-private:
-
-  GPIO_TypeDef * _type;
-  uint32_t _pin, _mode, _pull, _speed, _alternate;
-  std::function<void()> _enable_peripheral_clock;
-
-};
+template <GPIO_TypeDef * PORT(), uint32_t pin, uint32_t mode, uint32_t pull, uint32_t speed, uint32_t alternate, void enable_peripheral_clock()>
+void DigitalOutPin<PORT, pin, mode, pull, speed, alternate, enable_peripheral_clock>::clr()
+{
+  HAL_GPIO_WritePin(PORT(), pin, GPIO_PIN_RESET);
+}
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
 } /* miyo::hal */
-
-#endif /* INCLUDE_HAL_DIGITALOUTPIN_H_ */

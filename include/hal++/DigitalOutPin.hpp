@@ -16,11 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#ifndef INCLUDE_HAL_DIGITALOUTPIN_HPP_
+#define INCLUDE_HAL_DIGITALOUTPIN_HPP_
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-#include <hal++/DigitalOutPin.h>
+#include <hal++/interface/DigitalOutPin.h>
+
+#include <cstdint>
+
+#include <functional>
+
+extern "C" {
+#include "stm32l4xx_hal.h"
+}
 
 /**************************************************************************************
  * NAMESPACE
@@ -30,63 +41,32 @@ namespace miyo::hal
 {
 
 /**************************************************************************************
- * CTOR/DTOR
+ * CLASS DECLARATION
  **************************************************************************************/
 
-DigitalOutPin::DigitalOutPin(GPIO_TypeDef * type,
-                             uint32_t const pin,
-                             uint32_t const mode,
-                             uint32_t const pull,
-                             uint32_t const speed,
-                             uint32_t const alternate,
-                             std::function<void()> const enable_peripheral_clock)
-: _type{type}
-, _pin{pin}
-, _mode{mode}
-, _pull{pull}
-, _speed{speed}
-, _alternate{alternate}
-, _enable_peripheral_clock{enable_peripheral_clock}
+template <GPIO_TypeDef * PORT(), uint32_t pin, uint32_t mode, uint32_t pull, uint32_t speed, uint32_t alternate, void enable_peripheral_clock()>
+class DigitalOutPin : public interface::DigitalOutPin
 {
+public:
 
-}
+  virtual ~DigitalOutPin() { }
 
-DigitalOutPin::~DigitalOutPin()
-{
-  HAL_GPIO_DeInit(_type, _pin);
-}
+  virtual void init() override;
 
-/**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
- **************************************************************************************/
-
-void DigitalOutPin::init()
-{
-  _enable_peripheral_clock();
-
-  GPIO_InitTypeDef gpio_init_structure;
-
-  gpio_init_structure.Pin       = _pin;
-  gpio_init_structure.Mode      = _mode;
-  gpio_init_structure.Pull      = _pull;
-  gpio_init_structure.Speed     = _speed;
-  gpio_init_structure.Alternate = _alternate;
-
-  HAL_GPIO_Init(_type, &gpio_init_structure);
-}
-
-void DigitalOutPin::set()
-{
-  HAL_GPIO_WritePin(_type, _pin, GPIO_PIN_SET);
-}
-
-void DigitalOutPin::clr()
-{
-  HAL_GPIO_WritePin(_type, _pin, GPIO_PIN_RESET);
-}
+  virtual void set() override;
+  virtual void clr() override;
+};
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
 } /* miyo::hal */
+
+/**************************************************************************************
+ * TEMPLATE IMPLEMENTATION
+ **************************************************************************************/
+
+#include "DigitalOutPin.ipp"
+
+#endif /* INCLUDE_HAL_DIGITALOUTPIN_HPP_ */
