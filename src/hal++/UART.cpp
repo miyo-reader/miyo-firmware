@@ -36,7 +36,7 @@ namespace miyo::hal
 UART::UART(interface::DigitalOutPin & tx, interface::DigitalOutPin & rx)
 : _tx{tx}
 , _rx{rx}
-, _hdl_uart{nullptr}
+, _hdl_uart{}
 {
 
 }
