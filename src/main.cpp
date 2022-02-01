@@ -25,7 +25,6 @@
 
 extern "C" {
 #include "stm32l4xx_hal.h"
-#include "stm32l4s5i_iot01.h"
 }
 
 #include <hal++/UART.hpp>
