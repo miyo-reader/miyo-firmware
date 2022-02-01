@@ -17,6 +17,7 @@ set(CMAKE_DEBUGGER arm-none-eabi-gdb)
 set(CMAKE_CPPFILT arm-none-eabi-c++filt)
 ##########################################################################
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 ##########################################################################
 add_executable(${MIYO_READER} "")
 ##########################################################################
@@ -42,13 +43,10 @@ target_sources(${MIYO_READER}
 ##########################################################################
 target_compile_features(${MIYO_READER} PUBLIC cxx_std_17)
 ##########################################################################
-target_compile_options(${MIYO_READER} PUBLIC
-  -mcpu=cortex-m4 
-  -mthumb 
-  -mfloat-abi=hard 
-  -mfpu=fpv4-sp-d16
-  -fstack-usage
-  -Wall
+target_link_libraries(${MIYO_READER}
+  miyo-cmsis
+  miyo-cmsis-device-l4
+  miyo-stm32hal
 )
 ##########################################################################
 set_target_properties(

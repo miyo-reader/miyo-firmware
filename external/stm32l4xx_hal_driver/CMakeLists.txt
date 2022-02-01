@@ -1,13 +1,29 @@
 ##########################################################################
 cmake_minimum_required(VERSION 3.16)
 ##########################################################################
-target_compile_definitions(${MIYO_READER} PRIVATE USE_HAL_DRIVER)
-target_compile_definitions(${MIYO_READER} PRIVATE DEBUG)
-target_compile_definitions(${MIYO_READER} PRIVATE STM32L4S5xx)
+set(STM32L4_HAL_TARGET "miyo-stm32hal")
 ##########################################################################
-target_include_directories(${MIYO_READER} PRIVATE current/Inc)
+add_library(${STM32L4_HAL_TARGET} STATIC "")
 ##########################################################################
-target_sources(${MIYO_READER}
+target_compile_definitions(${STM32L4_HAL_TARGET} PRIVATE USE_HAL_DRIVER)
+target_compile_definitions(${STM32L4_HAL_TARGET} PRIVATE DEBUG)
+target_compile_definitions(${STM32L4_HAL_TARGET} PUBLIC  STM32L4S5xx)
+##########################################################################
+target_include_directories(${STM32L4_HAL_TARGET} PUBLIC  current/Inc)
+target_include_directories(${STM32L4_HAL_TARGET} PRIVATE ../../include)
+target_include_directories(${STM32L4_HAL_TARGET} PRIVATE ../cmsis/current/Include)
+target_include_directories(${STM32L4_HAL_TARGET} PRIVATE ../cmsis_device_l4/current/Include)
+##########################################################################
+target_compile_options(${STM32L4_HAL_TARGET} PUBLIC
+  -mcpu=cortex-m4
+  -mthumb
+  -mfloat-abi=hard
+  -mfpu=fpv4-sp-d16
+  -fstack-usage
+  -Wall
+)
+##########################################################################
+target_sources(${STM32L4_HAL_TARGET}
   PRIVATE
   current/Src/stm32l4xx_hal_dma2d.c
   current/Src/stm32l4xx_hal_irda.c
