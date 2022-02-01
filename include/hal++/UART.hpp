@@ -16,11 +16,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#ifndef INCLUDE_HAL_UART_HPP_
+#define INCLUDE_HAL_UART_HPP_
+
 /**************************************************************************************
- * INCLUDE
+ * NAMESPACE
  **************************************************************************************/
 
-#include <hal++/UART.h>
+#include <hal++/interface/UART.h>
+
+#include <hal++/interface/DigitalOutPin.h>
+
+extern "C" {
+#include "stm32l4xx_hal.h"
+}
 
 /**************************************************************************************
  * NAMESPACE
@@ -30,56 +39,42 @@ namespace miyo::hal
 {
 
 /**************************************************************************************
- * CTOR/DTOR
+ * CLASS DECLARATION
  **************************************************************************************/
 
-UART::UART(interface::DigitalOutPin & tx, interface::DigitalOutPin & rx)
-: _tx{tx}
-, _rx{rx}
-, _hdl_uart{}
+template <uint32_t BAUD_RATE, uint32_t WORD_LENGTH, uint32_t STOP_BITS, uint32_t PARITY, uint32_t MODE>
+class UART : public interface::UART
 {
+public:
 
-}
+  UART(interface::DigitalOutPin & tx, interface::DigitalOutPin & rx)
+  : _tx{tx}
+  , _rx{rx}
+  , _hdl_uart{}
+  { }
+  virtual ~UART() { }
 
-UART::~UART()
-{
 
-}
+  virtual bool    init() override;
+  virtual ssize_t transmit(uint8_t const * const buf, size_t const buf_size) override;
 
-/**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
- **************************************************************************************/
 
-bool UART::init()
-{
-  _tx.init();
-  _rx.init();
+private:
 
-  /* Enable USART clock */
-  __HAL_RCC_USART1_CLK_ENABLE();
-
-  /* USART configuration */
-  _hdl_uart.Instance = USART1;
-
-  _hdl_uart.Init.BaudRate   = 115200;
-  _hdl_uart.Init.WordLength = UART_WORDLENGTH_8B;
-  _hdl_uart.Init.StopBits   = UART_STOPBITS_1;
-  _hdl_uart.Init.Parity     = UART_PARITY_NONE;
-  _hdl_uart.Init.HwFlowCtl  = UART_HWCONTROL_NONE;
-  _hdl_uart.Init.Mode       = UART_MODE_TX_RX;
-
-  return (HAL_OK == HAL_UART_Init(&_hdl_uart));
-}
-
-ssize_t UART::transmit(uint8_t const * const buf, size_t const buf_size)
-{
-  if (HAL_OK != HAL_UART_Transmit(&_hdl_uart, buf, buf_size, 1000))
-    return -1;
-  return buf_size;
-}
+  interface::DigitalOutPin & _tx, & _rx;
+  UART_HandleTypeDef _hdl_uart;
+};
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
 } /* miyo::hal */
+
+/**************************************************************************************
+ * TEMPLATE IMPLEMENTATION
+ **************************************************************************************/
+
+#include "UART.ipp"
+
+#endif /* INCLUDE_HAL_UART_HPP_ */

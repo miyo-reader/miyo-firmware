@@ -16,21 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDE_HAL_UART_H_
-#define INCLUDE_HAL_UART_H_
-
-/**************************************************************************************
- * NAMESPACE
- **************************************************************************************/
-
-#include <hal++/interface/UART.h>
-
-#include <hal++/interface/DigitalOutPin.h>
-
-extern "C" {
-#include "stm32l4xx_hal.h"
-}
-
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -39,32 +24,41 @@ namespace miyo::hal
 {
 
 /**************************************************************************************
- * CLASS DECLARATION
+ * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-class UART : public interface::UART
+template <uint32_t BAUD_RATE, uint32_t WORD_LENGTH, uint32_t STOP_BITS, uint32_t PARITY, uint32_t MODE>
+bool UART<BAUD_RATE, WORD_LENGTH, STOP_BITS, PARITY, MODE>::init()
 {
+  _tx.init();
+  _rx.init();
 
-public:
+  /* Enable USART clock */
+  __HAL_RCC_USART1_CLK_ENABLE();
 
-  UART(interface::DigitalOutPin & tx, interface::DigitalOutPin & rx);
-  virtual ~UART();
+  /* USART configuration */
+  _hdl_uart.Instance = USART1;
 
-  virtual bool init() override;
+  _hdl_uart.Init.BaudRate   = BAUD_RATE;
+  _hdl_uart.Init.WordLength = WORD_LENGTH;
+  _hdl_uart.Init.StopBits   = STOP_BITS;
+  _hdl_uart.Init.Parity     = PARITY;
+  _hdl_uart.Init.HwFlowCtl  = UART_HWCONTROL_NONE;
+  _hdl_uart.Init.Mode       = MODE;
 
-  virtual ssize_t transmit(uint8_t const * const buf, size_t const buf_size) override;
+  return (HAL_OK == HAL_UART_Init(&_hdl_uart));
+}
 
-private:
-
-  interface::DigitalOutPin & _tx, & _rx;
-  UART_HandleTypeDef _hdl_uart;
-
-};
+template <uint32_t BAUD_RATE, uint32_t WORD_LENGTH, uint32_t STOP_BITS, uint32_t PARITY, uint32_t MODE>
+ssize_t UART<BAUD_RATE, WORD_LENGTH, STOP_BITS, PARITY, MODE>::transmit(uint8_t const * const buf, size_t const buf_size)
+{
+  if (HAL_OK != HAL_UART_Transmit(&_hdl_uart, buf, buf_size, 1000))
+    return -1;
+  return buf_size;
+}
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
 } /* miyo::hal */
-
-#endif /* INCLUDE_HAL_UART_H_ */

@@ -44,10 +44,8 @@ public:
 
   virtual ~UART() { }
 
-  virtual bool init() = 0;
-
+  virtual bool    init() = 0;
   virtual ssize_t transmit(uint8_t const * const buf, size_t const buf_size) = 0;
-
 };
 
 /**************************************************************************************

@@ -28,7 +28,7 @@ extern "C" {
 #include "stm32l4s5i_iot01.h"
 }
 
-#include <hal++/UART.h>
+#include <hal++/UART.hpp>
 #include <hal++/DigitalOutPin.hpp>
 
 /**************************************************************************************
@@ -67,7 +67,7 @@ miyo::hal::DigitalOutPin<Port_B,
                          GPIO_AF7_USART1,
                          gpiob_clk_enable> uart1_rx;
 
-miyo::hal::UART uart1(uart1_tx, uart1_rx);
+miyo::hal::UART<115200, UART_WORDLENGTH_8B, UART_STOPBITS_1, UART_PARITY_NONE, UART_MODE_TX_RX> uart1(uart1_tx, uart1_rx);
 
 /**************************************************************************************
  * MAIN
