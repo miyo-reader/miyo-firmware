@@ -1,5 +1,9 @@
 ##########################################################################
 cmake_minimum_required(VERSION 3.16)
 ##########################################################################
-target_include_directories(${MIYO_READER} PRIVATE current/Include)
+set(CMSIS_DEVICE_L4_TARGET "miyo-cmsis-device-l4")
+##########################################################################
+add_library(${CMSIS_DEVICE_L4_TARGET} INTERFACE)
+##########################################################################
+target_include_directories(${CMSIS_DEVICE_L4_TARGET} INTERFACE current/Include)
 ##########################################################################
