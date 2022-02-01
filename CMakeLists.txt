@@ -41,7 +41,7 @@ target_sources(${MIYO_READER}
   startup/startup_stm32l4s5aiix.s
 )
 ##########################################################################
-target_compile_features(${MIYO_READER} PUBLIC cxx_std_17)
+target_compile_features(${MIYO_READER} PRIVATE cxx_std_17)
 ##########################################################################
 target_link_libraries(${MIYO_READER}
   miyo-cmsis
