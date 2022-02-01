@@ -42,7 +42,7 @@ namespace miyo::hal
  * CLASS DECLARATION
  **************************************************************************************/
 
-template <GPIO_TypeDef * PORT(), uint32_t pin, uint32_t mode, uint32_t pull, uint32_t speed, uint32_t alternate, void enable_peripheral_clock()>
+template <GPIO_TypeDef * PORT(), uint32_t PIN, uint32_t MODE, uint32_t PULL, uint32_t SPEED, uint32_t ALTERNATE, void ENABLE_PERIPHERAL_CLOCK()>
 class DigitalOutPin : public interface::DigitalOutPin
 {
 public:
