@@ -31,7 +31,6 @@ target_sources(${MIYO_READER}
   PUBLIC
 
   src/main.cpp
-  src/stm32l4s5i_iot01.c
   src/stm32l4xx_hal_msp.c
   src/stm32l4xx_it.c
   src/syscalls.c
