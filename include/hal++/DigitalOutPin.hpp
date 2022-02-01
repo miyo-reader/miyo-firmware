@@ -16,38 +16,55 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDE_HAL_INTERFACE_DIGITALOUTPIN_H_
-#define INCLUDE_HAL_INTERFACE_DIGITALOUTPIN_H_
+#ifndef INCLUDE_HAL_DIGITALOUTPIN_HPP_
+#define INCLUDE_HAL_DIGITALOUTPIN_HPP_
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace miyo::hal::interface
+#include <hal++/interface/DigitalOutPin.h>
+
+#include <cstdint>
+
+extern "C" {
+#include "stm32l4xx_hal.h"
+}
+
+/**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+namespace miyo::hal
 {
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class DigitalOutPin
+template <GPIO_TypeDef * PORT(), uint32_t PIN, uint32_t MODE, uint32_t PULL, uint32_t SPEED, uint32_t ALTERNATE, void ENABLE_PERIPHERAL_CLOCK()>
+class DigitalOutPin : public interface::DigitalOutPin
 {
-
 public:
 
   virtual ~DigitalOutPin() { }
 
-  virtual void init() = 0;
+  virtual void init() override;
 
-  virtual void set() = 0;
-  virtual void clr() = 0;
-
+  virtual void set() override;
+  virtual void clr() override;
 };
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* miyo::hal::interface */
+} /* miyo::hal */
 
-#endif /* INCLUDE_HAL_INTERFACE_DIGITALOUTPIN_H_ */
+/**************************************************************************************
+ * TEMPLATE IMPLEMENTATION
+ **************************************************************************************/
+
+#include "DigitalOutPin.ipp"
+
+#endif /* INCLUDE_HAL_DIGITALOUTPIN_HPP_ */

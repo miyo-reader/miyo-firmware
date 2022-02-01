@@ -20,59 +20,39 @@
  * NAMESPACE
  **************************************************************************************/
 
-#include <hal++/DigitalOutPin.h>
-
-/**************************************************************************************
- * NAMESPACE
- **************************************************************************************/
-
 namespace miyo::hal
 {
-
-/**************************************************************************************
- * CTOR/DTOR
- **************************************************************************************/
-
-DigitalOutPin::DigitalOutPin(GPIO_TypeDef * type,
-                             uint32_t const pin,
-                             uint32_t const mode,
-                             uint32_t const pull,
-                             uint32_t const speed,
-                             uint32_t const alternate,
-                             std::function<void()> const enable_peripheral_clock)
-: _type{type}
-, _pin{pin}
-{
-  enable_peripheral_clock();
-
-  GPIO_InitTypeDef gpio_init_structure;
-
-  gpio_init_structure.Pin       = pin;
-  gpio_init_structure.Mode      = mode;
-  gpio_init_structure.Pull      = pull;
-  gpio_init_structure.Speed     = speed;
-  gpio_init_structure.Alternate = alternate;
-  
-  HAL_GPIO_Init(type, &gpio_init_structure);
-}
-
-DigitalOutPin::~DigitalOutPin()
-{
-  HAL_GPIO_DeInit(_type, _pin);
-}
 
 /**************************************************************************************
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void DigitalOutPin::set()
+ template <GPIO_TypeDef * PORT(), uint32_t PIN, uint32_t MODE, uint32_t PULL, uint32_t SPEED, uint32_t ALTERNATE, void ENABLE_PERIPHERAL_CLOCK()>
+void DigitalOutPin<PORT, PIN, MODE, PULL, SPEED, ALTERNATE, ENABLE_PERIPHERAL_CLOCK>::init()
 {
-  HAL_GPIO_WritePin(_type, _pin, GPIO_PIN_SET);
+  ENABLE_PERIPHERAL_CLOCK();
+
+  GPIO_InitTypeDef gpio_init_structure;
+
+  gpio_init_structure.Pin       = PIN;
+  gpio_init_structure.Mode      = MODE;
+  gpio_init_structure.Pull      = PULL;
+  gpio_init_structure.Speed     = SPEED;
+  gpio_init_structure.Alternate = ALTERNATE;
+
+  HAL_GPIO_Init(PORT(), &gpio_init_structure);
 }
 
-void DigitalOutPin::clr()
+ template <GPIO_TypeDef * PORT(), uint32_t PIN, uint32_t MODE, uint32_t PULL, uint32_t SPEED, uint32_t ALTERNATE, void ENABLE_PERIPHERAL_CLOCK()>
+void DigitalOutPin<PORT, PIN, MODE, PULL, SPEED, ALTERNATE, ENABLE_PERIPHERAL_CLOCK>::set()
 {
-  HAL_GPIO_WritePin(_type, _pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(PORT(), PIN, GPIO_PIN_SET);
+}
+
+ template <GPIO_TypeDef * PORT(), uint32_t PIN, uint32_t MODE, uint32_t PULL, uint32_t SPEED, uint32_t ALTERNATE, void ENABLE_PERIPHERAL_CLOCK()>
+void DigitalOutPin<PORT, PIN, MODE, PULL, SPEED, ALTERNATE, ENABLE_PERIPHERAL_CLOCK>::clr()
+{
+  HAL_GPIO_WritePin(PORT(), PIN, GPIO_PIN_RESET);
 }
 
 /**************************************************************************************

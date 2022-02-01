@@ -16,38 +16,65 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDE_HAL_INTERFACE_DIGITALOUTPIN_H_
-#define INCLUDE_HAL_INTERFACE_DIGITALOUTPIN_H_
+#ifndef INCLUDE_HAL_UART_HPP_
+#define INCLUDE_HAL_UART_HPP_
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace miyo::hal::interface
+#include <hal++/interface/UART.h>
+
+#include <hal++/interface/DigitalOutPin.h>
+
+extern "C" {
+#include "stm32l4xx_hal.h"
+}
+
+/**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+namespace miyo::hal
 {
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class DigitalOutPin
+template <USART_TypeDef * USART(), uint32_t BAUD_RATE, uint32_t WORD_LENGTH, uint32_t STOP_BITS, uint32_t PARITY, uint32_t MODE, void ENABLE_PERIPHERAL_CLOCK()>
+class UART : public interface::UART
 {
-
 public:
 
-  virtual ~DigitalOutPin() { }
+  UART(interface::DigitalOutPin & tx, interface::DigitalOutPin & rx)
+  : _tx{tx}
+  , _rx{rx}
+  , _hdl_uart{}
+  { }
+  virtual ~UART() { }
 
-  virtual void init() = 0;
 
-  virtual void set() = 0;
-  virtual void clr() = 0;
+  virtual bool    init() override;
+  virtual ssize_t transmit(uint8_t const * const buf, size_t const buf_size) override;
 
+
+private:
+
+  interface::DigitalOutPin & _tx, & _rx;
+  UART_HandleTypeDef _hdl_uart;
 };
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* miyo::hal::interface */
+} /* miyo::hal */
 
-#endif /* INCLUDE_HAL_INTERFACE_DIGITALOUTPIN_H_ */
+/**************************************************************************************
+ * TEMPLATE IMPLEMENTATION
+ **************************************************************************************/
+
+#include "UART.ipp"
+
+#endif /* INCLUDE_HAL_UART_HPP_ */

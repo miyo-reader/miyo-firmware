@@ -16,8 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDE_HAL_INTERFACE_DIGITALOUTPIN_H_
-#define INCLUDE_HAL_INTERFACE_DIGITALOUTPIN_H_
+#ifndef INCLUDE_HAL_INTERFACE_UART_H_
+#define INCLUDE_HAL_INTERFACE_UART_H_
+
+/**************************************************************************************
+ * INCLUDE
+ **************************************************************************************/
+
+#include <cstdint>
+#include <unistd.h> /* size_t, ssize_t */
 
 /**************************************************************************************
  * NAMESPACE
@@ -30,18 +37,15 @@ namespace miyo::hal::interface
  * CLASS DECLARATION
  **************************************************************************************/
 
-class DigitalOutPin
+class UART
 {
 
 public:
 
-  virtual ~DigitalOutPin() { }
+  virtual ~UART() { }
 
-  virtual void init() = 0;
-
-  virtual void set() = 0;
-  virtual void clr() = 0;
-
+  virtual bool    init() = 0;
+  virtual ssize_t transmit(uint8_t const * const buf, size_t const buf_size) = 0;
 };
 
 /**************************************************************************************
@@ -50,4 +54,4 @@ public:
 
 } /* miyo::hal::interface */
 
-#endif /* INCLUDE_HAL_INTERFACE_DIGITALOUTPIN_H_ */
+#endif /* INCLUDE_HAL_INTERFACE_UART_H_ */
