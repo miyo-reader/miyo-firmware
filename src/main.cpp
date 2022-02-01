@@ -38,8 +38,10 @@ extern "C" {
 static void SystemClock_Config();
 
 constexpr GPIO_TypeDef * Port_B() { return GPIOB; }
+constexpr USART_TypeDef * Usart_1() { return USART1; }
 
-static void gpiob_clk_enable() { __HAL_RCC_GPIOB_CLK_ENABLE(); }
+static void gpiob_clk_enable () { __HAL_RCC_GPIOB_CLK_ENABLE(); }
+static void usart1_clk_enable() { __HAL_RCC_USART1_CLK_ENABLE(); }
 
 /**************************************************************************************
  * GLOBAL VARIABLES
@@ -67,7 +69,13 @@ miyo::hal::DigitalOutPin<Port_B,
                          GPIO_AF7_USART1,
                          gpiob_clk_enable> uart1_rx;
 
-miyo::hal::UART<115200, UART_WORDLENGTH_8B, UART_STOPBITS_1, UART_PARITY_NONE, UART_MODE_TX_RX> uart1(uart1_tx, uart1_rx);
+miyo::hal::UART<Usart_1,
+                115200,
+                UART_WORDLENGTH_8B,
+                UART_STOPBITS_1,
+                UART_PARITY_NONE,
+                UART_MODE_TX_RX,
+                usart1_clk_enable> uart1(uart1_tx, uart1_rx);
 
 /**************************************************************************************
  * MAIN

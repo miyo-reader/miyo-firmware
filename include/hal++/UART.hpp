@@ -42,7 +42,7 @@ namespace miyo::hal
  * CLASS DECLARATION
  **************************************************************************************/
 
-template <uint32_t BAUD_RATE, uint32_t WORD_LENGTH, uint32_t STOP_BITS, uint32_t PARITY, uint32_t MODE>
+template <USART_TypeDef * USART(), uint32_t BAUD_RATE, uint32_t WORD_LENGTH, uint32_t STOP_BITS, uint32_t PARITY, uint32_t MODE, void ENABLE_PERIPHERAL_CLOCK()>
 class UART : public interface::UART
 {
 public:

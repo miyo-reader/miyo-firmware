@@ -27,17 +27,15 @@ namespace miyo::hal
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-template <uint32_t BAUD_RATE, uint32_t WORD_LENGTH, uint32_t STOP_BITS, uint32_t PARITY, uint32_t MODE>
-bool UART<BAUD_RATE, WORD_LENGTH, STOP_BITS, PARITY, MODE>::init()
+template <USART_TypeDef * USART(), uint32_t BAUD_RATE, uint32_t WORD_LENGTH, uint32_t STOP_BITS, uint32_t PARITY, uint32_t MODE, void ENABLE_PERIPHERAL_CLOCK()>
+bool UART<USART, BAUD_RATE, WORD_LENGTH, STOP_BITS, PARITY, MODE, ENABLE_PERIPHERAL_CLOCK>::init()
 {
   _tx.init();
   _rx.init();
 
-  /* Enable USART clock */
-  __HAL_RCC_USART1_CLK_ENABLE();
+  ENABLE_PERIPHERAL_CLOCK();
 
-  /* USART configuration */
-  _hdl_uart.Instance = USART1;
+  _hdl_uart.Instance = USART();
 
   _hdl_uart.Init.BaudRate   = BAUD_RATE;
   _hdl_uart.Init.WordLength = WORD_LENGTH;
@@ -49,8 +47,8 @@ bool UART<BAUD_RATE, WORD_LENGTH, STOP_BITS, PARITY, MODE>::init()
   return (HAL_OK == HAL_UART_Init(&_hdl_uart));
 }
 
-template <uint32_t BAUD_RATE, uint32_t WORD_LENGTH, uint32_t STOP_BITS, uint32_t PARITY, uint32_t MODE>
-ssize_t UART<BAUD_RATE, WORD_LENGTH, STOP_BITS, PARITY, MODE>::transmit(uint8_t const * const buf, size_t const buf_size)
+template <USART_TypeDef * USART(), uint32_t BAUD_RATE, uint32_t WORD_LENGTH, uint32_t STOP_BITS, uint32_t PARITY, uint32_t MODE, void ENABLE_PERIPHERAL_CLOCK()>
+ssize_t UART<USART, BAUD_RATE, WORD_LENGTH, STOP_BITS, PARITY, MODE, ENABLE_PERIPHERAL_CLOCK>::transmit(uint8_t const * const buf, size_t const buf_size)
 {
   if (HAL_OK != HAL_UART_Transmit(&_hdl_uart, buf, buf_size, 1000))
     return -1;
