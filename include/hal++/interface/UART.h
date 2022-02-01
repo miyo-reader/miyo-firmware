@@ -16,55 +16,44 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDE_HAL_DIGITALOUTPIN_HPP_
-#define INCLUDE_HAL_DIGITALOUTPIN_HPP_
+#ifndef INCLUDE_HAL_INTERFACE_UART_H_
+#define INCLUDE_HAL_INTERFACE_UART_H_
 
 /**************************************************************************************
- * NAMESPACE
+ * INCLUDE
  **************************************************************************************/
-
-#include <hal++/interface/DigitalOutPin.h>
 
 #include <cstdint>
-
-extern "C" {
-#include "stm32l4xx_hal.h"
-}
+#include <unistd.h> /* size_t, ssize_t */
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace miyo::hal
+namespace miyo::hal::interface
 {
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-template <GPIO_TypeDef * PORT(), uint32_t pin, uint32_t mode, uint32_t pull, uint32_t speed, uint32_t alternate, void enable_peripheral_clock()>
-class DigitalOutPin : public interface::DigitalOutPin
+class UART
 {
+
 public:
 
-  virtual ~DigitalOutPin() { }
+  virtual ~UART() { }
 
-  virtual void init() override;
+  virtual bool init() = 0;
 
-  virtual void set() override;
-  virtual void clr() override;
+  virtual ssize_t transmit(uint8_t const * const buf, size_t const buf_size) = 0;
+
 };
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* miyo::hal */
+} /* miyo::hal::interface */
 
-/**************************************************************************************
- * TEMPLATE IMPLEMENTATION
- **************************************************************************************/
-
-#include "DigitalOutPin.ipp"
-
-#endif /* INCLUDE_HAL_DIGITALOUTPIN_HPP_ */
+#endif /* INCLUDE_HAL_INTERFACE_UART_H_ */

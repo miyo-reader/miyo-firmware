@@ -16,16 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDE_HAL_DIGITALOUTPIN_HPP_
-#define INCLUDE_HAL_DIGITALOUTPIN_HPP_
+#ifndef INCLUDE_HAL_UART_H_
+#define INCLUDE_HAL_UART_H_
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-#include <hal++/interface/DigitalOutPin.h>
+#include <hal++/interface/UART.h>
 
-#include <cstdint>
+#include <hal++/interface/DigitalOutPin.h>
 
 extern "C" {
 #include "stm32l4xx_hal.h"
@@ -42,17 +42,23 @@ namespace miyo::hal
  * CLASS DECLARATION
  **************************************************************************************/
 
-template <GPIO_TypeDef * PORT(), uint32_t pin, uint32_t mode, uint32_t pull, uint32_t speed, uint32_t alternate, void enable_peripheral_clock()>
-class DigitalOutPin : public interface::DigitalOutPin
+class UART : public interface::UART
 {
+
 public:
 
-  virtual ~DigitalOutPin() { }
+  UART(interface::DigitalOutPin & tx, interface::DigitalOutPin & rx);
+  virtual ~UART();
 
-  virtual void init() override;
+  virtual bool init() override;
 
-  virtual void set() override;
-  virtual void clr() override;
+  virtual ssize_t transmit(uint8_t const * const buf, size_t const buf_size) override;
+
+private:
+
+  interface::DigitalOutPin & _tx, & _rx;
+  UART_HandleTypeDef _hdl_uart;
+
 };
 
 /**************************************************************************************
@@ -61,10 +67,4 @@ public:
 
 } /* miyo::hal */
 
-/**************************************************************************************
- * TEMPLATE IMPLEMENTATION
- **************************************************************************************/
-
-#include "DigitalOutPin.ipp"
-
-#endif /* INCLUDE_HAL_DIGITALOUTPIN_HPP_ */
+#endif /* INCLUDE_HAL_UART_H_ */

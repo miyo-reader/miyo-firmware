@@ -20,18 +20,54 @@
  * INCLUDE
  **************************************************************************************/
 
+#include <cstdio>
+#include <cstring>
+
 extern "C" {
 #include "stm32l4xx_hal.h"
 #include "stm32l4s5i_iot01.h"
 }
 
-#include <hal++/DigitalOutPin.h>
+#include <hal++/UART.h>
+#include <hal++/DigitalOutPin.hpp>
 
 /**************************************************************************************
  * FUNCTION DECLARATION
  **************************************************************************************/
 
 static void SystemClock_Config();
+
+constexpr GPIO_TypeDef * Port_B() { return GPIOB; }
+
+static void gpiob_clk_enable() { __HAL_RCC_GPIOB_CLK_ENABLE(); }
+
+/**************************************************************************************
+ * GLOBAL VARIABLES
+ **************************************************************************************/
+
+miyo::hal::DigitalOutPin<Port_B,
+                         GPIO_PIN_14,
+                         GPIO_MODE_OUTPUT_PP,
+                         GPIO_NOPULL,
+                         GPIO_SPEED_FREQ_HIGH,
+                         0,
+                         gpiob_clk_enable> led_green;
+miyo::hal::DigitalOutPin<Port_B,
+                         GPIO_PIN_6,
+                         GPIO_MODE_AF_PP,
+                         GPIO_NOPULL,
+                         GPIO_SPEED_FREQ_HIGH,
+                         GPIO_AF7_USART1,
+                         gpiob_clk_enable> uart1_tx;
+miyo::hal::DigitalOutPin<Port_B,
+                         GPIO_PIN_7,
+                         GPIO_MODE_AF_PP,
+                         GPIO_NOPULL,
+                         GPIO_SPEED_FREQ_HIGH,
+                         GPIO_AF7_USART1,
+                         gpiob_clk_enable> uart1_rx;
+
+miyo::hal::UART uart1(uart1_tx, uart1_rx);
 
 /**************************************************************************************
  * MAIN
@@ -42,14 +78,19 @@ int main(void)
   HAL_Init();
   SystemClock_Config();
 
-  miyo::hal::DigitalOutPin led_green(GPIOB, GPIO_PIN_14, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, 0, []{ __HAL_RCC_GPIOB_CLK_ENABLE(); });
+  led_green.init();
+  uart1.init();
 
   for(;;)
   {
     led_green.set();
-    HAL_Delay(1000);
+    HAL_Delay(100);
     led_green.clr();
     HAL_Delay(100);
+
+    char msg[64] = {0};
+    snprintf(msg, sizeof(msg), "Hello Miyo!\r\n");
+    uart1.transmit((uint8_t const *)msg, strlen(msg));
   }
 }
 

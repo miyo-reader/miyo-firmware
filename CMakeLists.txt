@@ -29,6 +29,8 @@ target_include_directories(${MIYO_READER} PUBLIC include)
 target_sources(${MIYO_READER}
   PUBLIC
 
+  src/hal++/UART.cpp
+
   src/main.cpp
   src/stm32l4s5i_iot01.c
   src/stm32l4xx_hal_msp.c
