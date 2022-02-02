@@ -30,6 +30,8 @@ extern "C" {
 #include <hal++/UART.hpp>
 #include <hal++/DigitalOutPin.hpp>
 
+#include <logging/LoggerBase.hpp>
+
 /**************************************************************************************
  * FUNCTION DECLARATION
  **************************************************************************************/

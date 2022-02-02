@@ -16,65 +16,75 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDE_HAL_UART_HPP_
-#define INCLUDE_HAL_UART_HPP_
+#ifndef INCLUDE_LOGGING_LOGGERBASE_H_
+#define INCLUDE_LOGGING_LOGGERBASE_H_
 
 /**************************************************************************************
  * INCLUDE
  **************************************************************************************/
 
-#include <hal++/interface/UART.h>
-
-#include <hal++/interface/DigitalOutPin.h>
-
-extern "C" {
-#include "stm32l4xx_hal.h"
-}
+#include <cstdint>
+#include <unistd.h> /* size_t, ssize_t */
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace miyo::hal
+namespace miyo::logging
 {
+
+/**************************************************************************************
+ * TYPEDEF
+ **************************************************************************************/
+
+enum class LogLevel
+{
+  Error, Warning, Info, Debug, Verbose
+};
+
+/**************************************************************************************
+ * CONSTANT
+ **************************************************************************************/
+
+static constexpr size_t DEFAULT_LOG_BUFFER_SIZE = 80;
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-template <USART_TypeDef * USART(), uint32_t BAUD_RATE, uint32_t WORD_LENGTH, uint32_t STOP_BITS, uint32_t PARITY, uint32_t MODE, void ENABLE_PERIPHERAL_CLOCK()>
-class UART : public interface::UART
+template<size_t LOG_BUFFER_SIZE = DEFAULT_LOG_BUFFER_SIZE>
+class LoggerBase
 {
 public:
 
-  UART(interface::DigitalOutPin & tx, interface::DigitalOutPin & rx)
-  : _tx{tx}
-  , _rx{rx}
-  , _hdl_uart{}
-  { }
-  virtual ~UART() { }
+  virtual ~LoggerBase() { }
+
+  void log(LogLevel const lvl, char * fmt, ...);
 
 
-  virtual bool    init() override;
-  virtual ssize_t transmit(uint8_t const * const buf, size_t const buf_size) override;
+protected:
+  
+  virtual ssize_t write(uint8_t const * msg, size_t const msg_len) = 0;
 
 
 private:
 
-  interface::DigitalOutPin & _tx, & _rx;
-  UART_HandleTypeDef _hdl_uart;
+  void log_str    (char const * str);
+  void log_level  (LogLevel const lvl);
+  void log_message(char const * fmt, va_list args);
+
 };
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* miyo::hal */
+} /* miyo::logging */
 
 /**************************************************************************************
  * TEMPLATE IMPLEMENTATION
  **************************************************************************************/
 
-#include "UART.ipp"
+#include "LoggerBase.ipp"
 
-#endif /* INCLUDE_HAL_UART_HPP_ */
+#endif /* INCLUDE_LOGGING_LOGGERBASE_H_ */
