@@ -23,6 +23,7 @@
  * INCLUDE
  **************************************************************************************/
 
+#include <cstdarg>
 #include <cstdint>
 #include <unistd.h> /* size_t, ssize_t */
 
@@ -59,7 +60,7 @@ public:
 
   virtual ~LoggerBase() { }
 
-  void log(LogLevel const lvl, char * fmt, ...);
+  void log(LogLevel const lvl, char const * fmt, ...);
 
 
 protected:

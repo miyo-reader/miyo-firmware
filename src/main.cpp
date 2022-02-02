@@ -20,9 +20,6 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <cstdio>
-#include <cstring>
-
 extern "C" {
 #include "stm32l4xx_hal.h"
 }
@@ -30,7 +27,7 @@ extern "C" {
 #include <hal++/UART.hpp>
 #include <hal++/DigitalOutPin.hpp>
 
-#include <logging/LoggerBase.hpp>
+#include <logging/LoggerUart.h>
 
 /**************************************************************************************
  * FUNCTION DECLARATION
@@ -78,6 +75,8 @@ miyo::hal::UART<Usart_1,
                 UART_MODE_TX_RX,
                 usart1_clk_enable> uart1(uart1_tx, uart1_rx);
 
+miyo::logging::LoggerUart logger(uart1);
+
 /**************************************************************************************
  * MAIN
  **************************************************************************************/
@@ -97,9 +96,7 @@ int main(void)
     led_green.clr();
     HAL_Delay(100);
 
-    char msg[64] = {0};
-    snprintf(msg, sizeof(msg), "Hello Miyo!\r\n");
-    uart1.transmit((uint8_t const *)msg, strlen(msg));
+    logger.log(miyo::logging::LogLevel::Info, "Hello Miyo!");
   }
 }
 

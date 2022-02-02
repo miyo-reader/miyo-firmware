@@ -16,12 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#ifndef INCLUDE_LOGGING_LOGGERUART_H_
+#define INCLUDE_LOGGING_LOGGERUART_H_
+
 /**************************************************************************************
  * INCLUDE
  **************************************************************************************/
 
-#include <cstdio>
-#include <cstring>
+#include "LoggerBase.hpp"
+
+#include <hal++/interface/UART.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -31,56 +35,32 @@ namespace miyo::logging
 {
 
 /**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
+ * CLASS DECLARATION
  **************************************************************************************/
 
-template<size_t LOG_BUFFER_SIZE>
-void LoggerBase<LOG_BUFFER_SIZE>::log(LogLevel const lvl, char const * fmt, ...)
+class LoggerUart : public LoggerBase<DEFAULT_LOG_BUFFER_SIZE>
 {
-  log_level(lvl);
+public:
 
-  va_list args;
-  va_start(args, fmt);
-  log_message(fmt, args);
-  va_end(args);
+  LoggerUart(hal::interface::UART & uart) : _uart{uart} { }
+  virtual ~LoggerUart() { }
 
-  log_str("\r\n");
-}
-
-/**************************************************************************************
- * PRIVATE MEMBER FUNCTIONS
- **************************************************************************************/
-
-template<size_t LOG_BUFFER_SIZE>
-void LoggerBase<LOG_BUFFER_SIZE>::log_str(char const * str)
-{
-  write(reinterpret_cast<uint8_t const *>(str), strlen(str));
-}
-
-
-template<size_t LOG_BUFFER_SIZE>
-void LoggerBase<LOG_BUFFER_SIZE>::log_level(LogLevel const lvl)
-{
-  switch(lvl)
+protected:
+  
+  virtual ssize_t write(uint8_t const * msg, size_t const msg_len) override
   {
-  case LogLevel::Error:   log_str("[E] "); break;
-  case LogLevel::Warning: log_str("[W] "); break;
-  case LogLevel::Info:    log_str("[I] "); break;
-  case LogLevel::Debug:   log_str("[D] "); break;
-  case LogLevel::Verbose: log_str("[V] "); break;
+    return _uart.transmit(msg, msg_len);
   }
-}
 
-template<size_t LOG_BUFFER_SIZE>
-void LoggerBase<LOG_BUFFER_SIZE>::log_message(char const * fmt, va_list args)
-{
-  char buf[LOG_BUFFER_SIZE] = {0};
-  vsnprintf(buf, LOG_BUFFER_SIZE, fmt, args);
-  log_str(buf);
-}
+private:
+
+  hal::interface::UART & _uart;
+};
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
 } /* miyo::logging */
+
+#endif /* INCLUDE_LOGGING_LOGGERUART_H_ */
