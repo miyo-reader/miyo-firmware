@@ -58,8 +58,6 @@ class LoggerBase
 {
 public:
 
-  virtual ~LoggerBase() { }
-
   void log(LogLevel const lvl, char const * fmt, ...);
 
 private:
