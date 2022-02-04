@@ -35,6 +35,40 @@ namespace miyo::logging
 {
 
 /**************************************************************************************
+ * DEFINES
+ **************************************************************************************/
+
+#ifdef DBG_ENABLE_ERROR
+#  define DBG_ERROR(fmt, ...) Logger::instance().log(miyo::logging::LogLevel::Error, fmt, ## __VA_ARGS__)
+#else
+#  define DBG_ERROR(fmt, ...)
+#endif
+
+#ifdef DBG_ENABLE_WARNING
+#  define DBG_WARNING(fmt, ...) Logger::instance().log(miyo::logging::LogLevel::Warning, fmt, ## __VA_ARGS__)
+#else
+#  define DBG_WARNING(fmt, ...)
+#endif
+
+#ifdef DBG_ENABLE_INFO
+#  define DBG_INFO(fmt, ...) Logger::instance().log(miyo::logging::LogLevel::Info, fmt, ## __VA_ARGS__)
+#else
+#  define DBG_INFO(fmt, ...)
+#endif
+
+#ifdef DBG_ENABLE_DEBUG
+#  define DBG_DEBUG(fmt, ...) Logger::instance().log(miyo::logging::LogLevel::Debug, fmt, ## __VA_ARGS__)
+#else
+#  define DBG_DEBUG(fmt, ...)
+#endif
+
+#ifdef DBG_ENABLE_VERBOSE
+#  define DBG_VERBOSE(fmt, ...) Logger::instance().log(miyo::logging::LogLevel::Verbose, fmt, ## __VA_ARGS__)
+#else
+#  define DBG_VERBOSE(fmt, ...)
+#endif
+
+/**************************************************************************************
  * TYPEDEF
  **************************************************************************************/
 

@@ -97,7 +97,7 @@ int main(void)
     led_green.clr();
     HAL_Delay(100);
 
-    Logger::instance().log(miyo::logging::LogLevel::Info, "Hello Miyo!");
+    DBG_INFO("Hello Miyo!");
   }
 }
 
