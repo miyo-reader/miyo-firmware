@@ -61,4 +61,13 @@ private:
 
 } /* miyo::logging */
 
+/**************************************************************************************
+ * DEFINES
+ **************************************************************************************/
+
+#define MIYO_LOG_DEVICE_UART_INSTANCE(uart) \
+miyo::logging::LogDeviceUart log_device_uart(uart1); \
+static miyo::logging::interface::LogDevice & get_log_device_uart() { return log_device_uart; } \
+typedef miyo::logging::LoggerBase<get_log_device_uart> Logger;
+
 #endif /* INCLUDE_LOGGING_LOGGERUART_H_ */

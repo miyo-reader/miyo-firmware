@@ -76,9 +76,7 @@ miyo::hal::UART<Usart_1,
                 UART_MODE_TX_RX,
                 usart1_clk_enable> uart1(uart1_tx, uart1_rx);
 
-miyo::logging::LogDeviceUart log_device_uart(uart1);
-static miyo::logging::interface::LogDevice & get_log_device_uart() { return log_device_uart; }
-typedef miyo::logging::LoggerBase<get_log_device_uart> Logger;
+MIYO_LOG_DEVICE_UART_INSTANCE(uart1);
 
 /**************************************************************************************
  * MAIN
