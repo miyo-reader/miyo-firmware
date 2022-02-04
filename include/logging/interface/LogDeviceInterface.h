@@ -16,51 +16,40 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDE_LOGGING_LOGGERUART_H_
-#define INCLUDE_LOGGING_LOGGERUART_H_
+#ifndef INCLUDE_LOGGING_INTERFACE_LOGDEVICE_H_
+#define INCLUDE_LOGGING_INTERFACE_LOGDEVICE_H_
 
 /**************************************************************************************
  * INCLUDE
  **************************************************************************************/
 
-#include "LoggerBase.hpp"
-
-#include <hal++/interface/UART.h>
+#include <cstdint>
+#include <unistd.h> /* size_t, ssize_t */
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace miyo::logging
+namespace miyo::logging::interface
 {
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class LoggerUart : public LoggerBase<DEFAULT_LOG_BUFFER_SIZE>
+class LogDevice
 {
 public:
 
-  LoggerUart(hal::interface::UART & uart) : _uart{uart} { }
-  virtual ~LoggerUart() { }
-
-protected:
+  virtual ~LogDevice() { }
   
-  virtual ssize_t write(uint8_t const * msg, size_t const msg_len) override
-  {
-    return _uart.transmit(msg, msg_len);
-  }
-
-private:
-
-  hal::interface::UART & _uart;
+  virtual ssize_t write(uint8_t const * msg, size_t const msg_len) = 0;
 };
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* miyo::logging */
+} /* miyo::logging::interface */
 
-#endif /* INCLUDE_LOGGING_LOGGERUART_H_ */
+#endif /* INCLUDE_LOGGING_INTERFACE_LOGDEVICE_H_ */

@@ -34,8 +34,8 @@ namespace miyo::logging
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-template<size_t LOG_BUFFER_SIZE>
-void LoggerBase<LOG_BUFFER_SIZE>::log(LogLevel const lvl, char const * fmt, ...)
+template<interface::LogDevice & LOG_DEVICE(), size_t LOG_BUFFER_SIZE>
+void LoggerBase<LOG_DEVICE, LOG_BUFFER_SIZE>::log(LogLevel const lvl, char const * fmt, ...)
 {
   log_level(lvl);
 
@@ -51,15 +51,15 @@ void LoggerBase<LOG_BUFFER_SIZE>::log(LogLevel const lvl, char const * fmt, ...)
  * PRIVATE MEMBER FUNCTIONS
  **************************************************************************************/
 
-template<size_t LOG_BUFFER_SIZE>
-void LoggerBase<LOG_BUFFER_SIZE>::log_str(char const * str)
+template<interface::LogDevice & LOG_DEVICE(), size_t LOG_BUFFER_SIZE>
+void LoggerBase<LOG_DEVICE, LOG_BUFFER_SIZE>::log_str(char const * str)
 {
-  write(reinterpret_cast<uint8_t const *>(str), strlen(str));
+  LOG_DEVICE().write(reinterpret_cast<uint8_t const *>(str), strlen(str));
 }
 
 
-template<size_t LOG_BUFFER_SIZE>
-void LoggerBase<LOG_BUFFER_SIZE>::log_level(LogLevel const lvl)
+template<interface::LogDevice & LOG_DEVICE(), size_t LOG_BUFFER_SIZE>
+void LoggerBase<LOG_DEVICE, LOG_BUFFER_SIZE>::log_level(LogLevel const lvl)
 {
   switch(lvl)
   {
@@ -71,8 +71,8 @@ void LoggerBase<LOG_BUFFER_SIZE>::log_level(LogLevel const lvl)
   }
 }
 
-template<size_t LOG_BUFFER_SIZE>
-void LoggerBase<LOG_BUFFER_SIZE>::log_message(char const * fmt, va_list args)
+template<interface::LogDevice & LOG_DEVICE(), size_t LOG_BUFFER_SIZE>
+void LoggerBase<LOG_DEVICE, LOG_BUFFER_SIZE>::log_message(char const * fmt, va_list args)
 {
   char buf[LOG_BUFFER_SIZE] = {0};
   vsnprintf(buf, LOG_BUFFER_SIZE, fmt, args);

@@ -27,7 +27,8 @@ extern "C" {
 #include <hal++/UART.hpp>
 #include <hal++/DigitalOutPin.hpp>
 
-#include <logging/LoggerUart.h>
+#include <logging/LoggerBase.hpp>
+#include <logging/LogDeviceUart.h>
 
 /**************************************************************************************
  * FUNCTION DECLARATION
@@ -75,7 +76,9 @@ miyo::hal::UART<Usart_1,
                 UART_MODE_TX_RX,
                 usart1_clk_enable> uart1(uart1_tx, uart1_rx);
 
-miyo::logging::LoggerUart logger(uart1);
+miyo::logging::LogDeviceUart log_device_uart(uart1);
+static miyo::logging::interface::LogDevice & get_log_device_uart() { return log_device_uart; }
+miyo::logging::LoggerBase<get_log_device_uart> logger;
 
 /**************************************************************************************
  * MAIN

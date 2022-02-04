@@ -16,16 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDE_LOGGING_LOGGERBASE_H_
-#define INCLUDE_LOGGING_LOGGERBASE_H_
+#ifndef INCLUDE_LOGGING_LOGGERUART_H_
+#define INCLUDE_LOGGING_LOGGERUART_H_
 
 /**************************************************************************************
  * INCLUDE
  **************************************************************************************/
 
-#include <cstdarg>
-
 #include "interface/LogDeviceInterface.h"
+
+#include <hal++/interface/UART.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -35,39 +35,24 @@ namespace miyo::logging
 {
 
 /**************************************************************************************
- * TYPEDEF
- **************************************************************************************/
-
-enum class LogLevel
-{
-  Error, Warning, Info, Debug, Verbose
-};
-
-/**************************************************************************************
- * CONSTANT
- **************************************************************************************/
-
-static constexpr size_t DEFAULT_LOG_BUFFER_SIZE = 80;
-
-/**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-template<interface::LogDevice & LOG_DEVICE(), size_t LOG_BUFFER_SIZE = DEFAULT_LOG_BUFFER_SIZE>
-class LoggerBase
+class LogDeviceUart : public interface::LogDevice
 {
 public:
 
-  virtual ~LoggerBase() { }
+  LogDeviceUart(hal::interface::UART & uart) : _uart{uart} { }
+  virtual ~LogDeviceUart() { }
 
-  void log(LogLevel const lvl, char const * fmt, ...);
+  virtual ssize_t write(uint8_t const * msg, size_t const msg_len) override
+  {
+    return _uart.transmit(msg, msg_len);
+  }
 
 private:
 
-  void log_str    (char const * str);
-  void log_level  (LogLevel const lvl);
-  void log_message(char const * fmt, va_list args);
-
+  hal::interface::UART & _uart;
 };
 
 /**************************************************************************************
@@ -76,10 +61,4 @@ private:
 
 } /* miyo::logging */
 
-/**************************************************************************************
- * TEMPLATE IMPLEMENTATION
- **************************************************************************************/
-
-#include "LoggerBase.ipp"
-
-#endif /* INCLUDE_LOGGING_LOGGERBASE_H_ */
+#endif /* INCLUDE_LOGGING_LOGGERUART_H_ */
