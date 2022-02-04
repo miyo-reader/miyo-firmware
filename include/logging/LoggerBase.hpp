@@ -58,7 +58,11 @@ class LoggerBase
 {
 public:
 
+  static LoggerBase & instance();
+
   void log(LogLevel const lvl, char const * fmt, ...);
+
+  void operator = (LoggerBase &) = delete;
 
 private:
 

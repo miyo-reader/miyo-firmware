@@ -78,7 +78,7 @@ miyo::hal::UART<Usart_1,
 
 miyo::logging::LogDeviceUart log_device_uart(uart1);
 static miyo::logging::interface::LogDevice & get_log_device_uart() { return log_device_uart; }
-miyo::logging::LoggerBase<get_log_device_uart> logger;
+typedef miyo::logging::LoggerBase<get_log_device_uart> Logger;
 
 /**************************************************************************************
  * MAIN
@@ -99,7 +99,7 @@ int main(void)
     led_green.clr();
     HAL_Delay(100);
 
-    logger.log(miyo::logging::LogLevel::Info, "Hello Miyo!");
+    Logger::instance().log(miyo::logging::LogLevel::Info, "Hello Miyo!");
   }
 }
 

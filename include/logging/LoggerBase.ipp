@@ -35,6 +35,13 @@ namespace miyo::logging
  **************************************************************************************/
 
 template<interface::LogDevice & LOG_DEVICE(), size_t LOG_BUFFER_SIZE>
+LoggerBase<LOG_DEVICE, LOG_BUFFER_SIZE> & LoggerBase<LOG_DEVICE, LOG_BUFFER_SIZE>::instance()
+{
+  static LoggerBase<LOG_DEVICE, LOG_BUFFER_SIZE> logger;
+  return logger;
+}
+
+template<interface::LogDevice & LOG_DEVICE(), size_t LOG_BUFFER_SIZE>
 void LoggerBase<LOG_DEVICE, LOG_BUFFER_SIZE>::log(LogLevel const lvl, char const * fmt, ...)
 {
   log_level(lvl);
