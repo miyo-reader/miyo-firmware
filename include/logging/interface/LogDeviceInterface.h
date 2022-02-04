@@ -16,65 +16,40 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDE_HAL_UART_HPP_
-#define INCLUDE_HAL_UART_HPP_
+#ifndef INCLUDE_LOGGING_INTERFACE_LOGDEVICE_H_
+#define INCLUDE_LOGGING_INTERFACE_LOGDEVICE_H_
 
 /**************************************************************************************
  * INCLUDE
  **************************************************************************************/
 
-#include <hal++/interface/UART.h>
-
-#include <hal++/interface/DigitalOutPin.h>
-
-extern "C" {
-#include "stm32l4xx_hal.h"
-}
+#include <cstdint>
+#include <unistd.h> /* size_t, ssize_t */
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace miyo::hal
+namespace miyo::logging::interface
 {
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-template <USART_TypeDef * USART(), uint32_t BAUD_RATE, uint32_t WORD_LENGTH, uint32_t STOP_BITS, uint32_t PARITY, uint32_t MODE, void ENABLE_PERIPHERAL_CLOCK()>
-class UART : public interface::UART
+class LogDevice
 {
 public:
 
-  UART(interface::DigitalOutPin & tx, interface::DigitalOutPin & rx)
-  : _tx{tx}
-  , _rx{rx}
-  , _hdl_uart{}
-  { }
-  virtual ~UART() { }
-
-
-  virtual bool    init() override;
-  virtual ssize_t transmit(uint8_t const * const buf, size_t const buf_size) override;
-
-
-private:
-
-  interface::DigitalOutPin & _tx, & _rx;
-  UART_HandleTypeDef _hdl_uart;
+  virtual ~LogDevice() { }
+  
+  virtual ssize_t write(uint8_t const * msg, size_t const msg_len) = 0;
 };
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* miyo::hal */
+} /* miyo::logging::interface */
 
-/**************************************************************************************
- * TEMPLATE IMPLEMENTATION
- **************************************************************************************/
-
-#include "UART.ipp"
-
-#endif /* INCLUDE_HAL_UART_HPP_ */
+#endif /* INCLUDE_LOGGING_INTERFACE_LOGDEVICE_H_ */

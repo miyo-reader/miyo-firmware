@@ -42,6 +42,12 @@ target_sources(${MIYO_READER}
 ##########################################################################
 target_compile_features(${MIYO_READER} PRIVATE cxx_std_17)
 ##########################################################################
+target_compile_definitions(${MIYO_READER} PRIVATE DBG_ENABLE_ERROR)
+target_compile_definitions(${MIYO_READER} PRIVATE DBG_ENABLE_WARNING)
+target_compile_definitions(${MIYO_READER} PRIVATE DBG_ENABLE_INFO)
+target_compile_definitions(${MIYO_READER} PRIVATE DBG_ENABLE_DEBUG)
+target_compile_definitions(${MIYO_READER} PRIVATE DBG_ENABLE_VERBOSE)
+##########################################################################
 target_link_libraries(${MIYO_READER}
   miyo-cmsis
   miyo-cmsis-device-l4
