@@ -24,6 +24,7 @@ extern "C" {
 #include "stm32l4xx_hal.h"
 }
 
+#include <hal++/SPI.hpp>
 #include <hal++/UART.hpp>
 #include <hal++/DigitalOutPin.hpp>
 
@@ -36,9 +37,13 @@ extern "C" {
 
 static void SystemClock_Config();
 
+constexpr SPI_TypeDef * Spi_1() { return SPI1; }
+constexpr GPIO_TypeDef * Port_A() { return GPIOA; }
 constexpr GPIO_TypeDef * Port_B() { return GPIOB; }
 constexpr USART_TypeDef * Usart_1() { return USART1; }
 
+static void spi1_clk_enable  () { __HAL_RCC_SPI1_CLK_ENABLE(); }
+static void gpioa_clk_enable () { __HAL_RCC_GPIOA_CLK_ENABLE(); }
 static void gpiob_clk_enable () { __HAL_RCC_GPIOB_CLK_ENABLE(); }
 static void usart1_clk_enable() { __HAL_RCC_USART1_CLK_ENABLE(); }
 
@@ -67,6 +72,34 @@ miyo::hal::DigitalOutPin<Port_B,
                          GPIO_SPEED_FREQ_HIGH,
                          GPIO_AF7_USART1,
                          gpiob_clk_enable> uart1_rx;
+miyo::hal::DigitalOutPin<Port_A,
+                         GPIO_PIN_5,
+                         GPIO_MODE_AF_PP,
+                         GPIO_NOPULL,
+                         GPIO_SPEED_FREQ_HIGH,
+                         GPIO_AF5_SPI1,
+                         gpioa_clk_enable> spi1_sck; /* D13 / PA5 */
+miyo::hal::DigitalOutPin<Port_A,
+                         GPIO_PIN_6,
+                         GPIO_MODE_AF_PP,
+                         GPIO_NOPULL,
+                         GPIO_SPEED_FREQ_HIGH,
+                         GPIO_AF5_SPI1,
+                         gpioa_clk_enable> spi1_miso; /* D12 / PA6 */
+miyo::hal::DigitalOutPin<Port_A,
+                         GPIO_PIN_7,
+                         GPIO_MODE_AF_PP,
+                         GPIO_NOPULL,
+                         GPIO_SPEED_FREQ_HIGH,
+                         GPIO_AF5_SPI1,
+                         gpioa_clk_enable> spi1_mosi; /* D11 / PA7 */
+miyo::hal::DigitalOutPin<Port_A,
+                         GPIO_PIN_2,
+                         GPIO_MODE_AF_PP,
+                         GPIO_PULLUP,
+                         GPIO_SPEED_FREQ_HIGH,
+                         0,
+                         gpioa_clk_enable> it8951_cs_select; /* D10 / PA2 */
 
 miyo::hal::UART<Usart_1,
                 115200,
@@ -75,6 +108,16 @@ miyo::hal::UART<Usart_1,
                 UART_PARITY_NONE,
                 UART_MODE_TX_RX,
                 usart1_clk_enable> uart1(uart1_tx, uart1_rx);
+
+miyo::hal::SPI<Spi_1,
+               spi1_clk_enable,
+               SPI_MODE_MASTER,
+               SPI_DIRECTION_2LINES,
+               SPI_DATASIZE_16BIT,
+               SPI_POLARITY_LOW,
+               SPI_PHASE_1EDGE,
+               SPI_BAUDRATEPRESCALER_128,
+               SPI_FIRSTBIT_MSB> spi1(spi1_mosi, spi1_miso, spi1_sck);
 
 MIYO_LOG_DEVICE_UART_INSTANCE(uart1);
 
@@ -89,6 +132,9 @@ int main(void)
 
   led_green.init();
   uart1.init();
+
+  it8951_cs_select.init();
+  spi1.init();
 
   for(;;)
   {
