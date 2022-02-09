@@ -27,7 +27,7 @@ namespace miyo::hal
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
- template <GPIO_TypeDef * PORT(), uint32_t PIN, uint32_t MODE, uint32_t PULL, uint32_t SPEED, uint32_t ALTERNATE, void ENABLE_PERIPHERAL_CLOCK()>
+template <GPIO_TypeDef * PORT(), uint32_t PIN, uint32_t MODE, uint32_t PULL, uint32_t SPEED, uint32_t ALTERNATE, void ENABLE_PERIPHERAL_CLOCK()>
 void DigitalOutPin<PORT, PIN, MODE, PULL, SPEED, ALTERNATE, ENABLE_PERIPHERAL_CLOCK>::init()
 {
   ENABLE_PERIPHERAL_CLOCK();
@@ -43,13 +43,13 @@ void DigitalOutPin<PORT, PIN, MODE, PULL, SPEED, ALTERNATE, ENABLE_PERIPHERAL_CL
   HAL_GPIO_Init(PORT(), &gpio_init_structure);
 }
 
- template <GPIO_TypeDef * PORT(), uint32_t PIN, uint32_t MODE, uint32_t PULL, uint32_t SPEED, uint32_t ALTERNATE, void ENABLE_PERIPHERAL_CLOCK()>
+template <GPIO_TypeDef * PORT(), uint32_t PIN, uint32_t MODE, uint32_t PULL, uint32_t SPEED, uint32_t ALTERNATE, void ENABLE_PERIPHERAL_CLOCK()>
 void DigitalOutPin<PORT, PIN, MODE, PULL, SPEED, ALTERNATE, ENABLE_PERIPHERAL_CLOCK>::set()
 {
   HAL_GPIO_WritePin(PORT(), PIN, GPIO_PIN_SET);
 }
 
- template <GPIO_TypeDef * PORT(), uint32_t PIN, uint32_t MODE, uint32_t PULL, uint32_t SPEED, uint32_t ALTERNATE, void ENABLE_PERIPHERAL_CLOCK()>
+template <GPIO_TypeDef * PORT(), uint32_t PIN, uint32_t MODE, uint32_t PULL, uint32_t SPEED, uint32_t ALTERNATE, void ENABLE_PERIPHERAL_CLOCK()>
 void DigitalOutPin<PORT, PIN, MODE, PULL, SPEED, ALTERNATE, ENABLE_PERIPHERAL_CLOCK>::clr()
 {
   HAL_GPIO_WritePin(PORT(), PIN, GPIO_PIN_RESET);
