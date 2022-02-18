@@ -38,14 +38,14 @@ namespace miyo::driver
  * CLASS DECLARATION
  **************************************************************************************/
 
-class IT8951
+class IT8951_IO
 {
 public:
 
-  IT8951(hal::interface::SPI & spi,
-         hal::interface::DigitalOutPin & cs,
-         hal::interface::DigitalOutPin & nreset,
-         hal::interface::DigitalInPin & host_ready);
+  IT8951_IO(hal::interface::SPI & spi,
+            hal::interface::DigitalOutPin & cs,
+            hal::interface::DigitalOutPin & nreset,
+            hal::interface::DigitalInPin & host_ready);
 
   enum class Error
   {

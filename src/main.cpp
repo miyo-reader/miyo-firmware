@@ -29,7 +29,7 @@ extern "C" {
 #include <hal++/DigitalInPin.hpp>
 #include <hal++/DigitalOutPin.hpp>
 
-#include <driver/IT8951.h>
+#include <driver/IT8951_IO.h>
 
 #include <logging/LoggerBase.hpp>
 #include <logging/LogDeviceUart.h>
@@ -138,7 +138,7 @@ miyo::hal::SPI<Spi_1,
 
 MIYO_LOG_DEVICE_UART_INSTANCE(uart1);
 
-miyo::driver::IT8951 it8951(spi1, it8951_cs_select, it8951_nreset, it8951_host_ready);
+miyo::driver::IT8951_IO it8951_io(spi1, it8951_cs_select, it8951_nreset, it8951_host_ready);
 
 /**************************************************************************************
  * MAIN
@@ -175,9 +175,9 @@ int main(void)
     DBG_INFO("Hello Miyo!");
 
     uint16_t data = 0;
-    it8951.command(miyo::driver::IT8951::Command::REG_RD);
-    it8951.write(0x0208);
-    it8951.read(data);
+    it8951_io.command(miyo::driver::IT8951_IO::Command::REG_RD);
+    it8951_io.write(0x0208);
+    it8951_io.read(data);
     DBG_INFO("LISAR = 0x%04x", data);
   }
 }
