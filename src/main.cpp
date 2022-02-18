@@ -175,7 +175,7 @@ int main(void)
     DBG_INFO("Hello Miyo!");
 
     uint16_t data = 0;
-    it8951_io.command(miyo::driver::IT8951::IT8951_IO::Command::REG_RD);
+    it8951_io.command(miyo::driver::IT8951::Command::REG_RD);
     it8951_io.write(0x0208);
     it8951_io.read(data);
     DBG_INFO("LISAR = 0x%04x", data);

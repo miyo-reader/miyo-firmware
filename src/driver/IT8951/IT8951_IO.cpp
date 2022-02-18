@@ -57,7 +57,7 @@ IT8951_IO::IT8951_IO(hal::interface::SPI & spi,
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-IT8951_IO::Error IT8951_IO::read(uint16_t & data)
+IT8951::Error IT8951_IO::read(uint16_t & data)
 {
   CHECK_RETURN_VAL(waitForHostReady());
   select();
@@ -70,7 +70,7 @@ IT8951_IO::Error IT8951_IO::read(uint16_t & data)
   return Error::None;
 }
 
-IT8951_IO::Error IT8951_IO::write(uint16_t const data)
+IT8951::Error IT8951_IO::write(uint16_t const data)
 {
   CHECK_RETURN_VAL(waitForHostReady());
   select();
@@ -81,7 +81,7 @@ IT8951_IO::Error IT8951_IO::write(uint16_t const data)
   return Error::None;
 }
 
-IT8951_IO::Error IT8951_IO::command(Command const cmd)
+IT8951::Error IT8951_IO::command(Command const cmd)
 {
   CHECK_RETURN_VAL(waitForHostReady());
   select();
@@ -96,13 +96,13 @@ IT8951_IO::Error IT8951_IO::command(Command const cmd)
  * PRIVATE MEMBER FUNCTIONS
  **************************************************************************************/
 
-IT8951_IO::Error IT8951_IO::waitForHostReady()
+IT8951::Error IT8951_IO::waitForHostReady()
 {
   while (!isHostReady()) { /* TODO: Introduce timeout. */ }
   return Error::None;
 }
 
-IT8951_IO::Error IT8951_IO::spi_send(Preamble const preamble)
+IT8951::Error IT8951_IO::spi_send(Preamble const preamble)
 {
   uint16_t preamble_buf = ntohs(static_cast<uint16_t>(preamble));
   size_t const PREAMBLE_BUF_NUM_WORDS = sizeof(preamble_buf) / 2;
@@ -112,7 +112,7 @@ IT8951_IO::Error IT8951_IO::spi_send(Preamble const preamble)
     return Error::None;
 }
 
-IT8951_IO::Error IT8951_IO::spi_send(uint16_t const data)
+IT8951::Error IT8951_IO::spi_send(uint16_t const data)
 {
   uint16_t const tx_buf = ntohs(data);
   uint16_t       rx_buf = 0;
@@ -125,7 +125,7 @@ IT8951_IO::Error IT8951_IO::spi_send(uint16_t const data)
     return Error::None;
 }
 
-IT8951_IO::Error IT8951_IO::spi_recv(uint16_t & data)
+IT8951::Error IT8951_IO::spi_recv(uint16_t & data)
 {
   uint16_t const tx_buf = {0};
   uint16_t       rx_buf = {0};
