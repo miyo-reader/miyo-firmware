@@ -26,7 +26,10 @@ extern "C" {
 
 #include <hal++/SPI.hpp>
 #include <hal++/UART.hpp>
+#include <hal++/DigitalInPin.hpp>
 #include <hal++/DigitalOutPin.hpp>
+
+#include <driver/IT8951.h>
 
 #include <logging/LoggerBase.hpp>
 #include <logging/LogDeviceUart.h>
@@ -79,7 +82,7 @@ miyo::hal::DigitalOutPin<Port_A,
                          GPIO_SPEED_FREQ_HIGH,
                          GPIO_AF5_SPI1,
                          gpioa_clk_enable> spi1_sck; /* D13 / PA5 */
-miyo::hal::DigitalOutPin<Port_A,
+miyo::hal::DigitalInPin <Port_A,
                          GPIO_PIN_6,
                          GPIO_MODE_AF_PP,
                          GPIO_NOPULL,
@@ -95,11 +98,25 @@ miyo::hal::DigitalOutPin<Port_A,
                          gpioa_clk_enable> spi1_mosi; /* D11 / PA7 */
 miyo::hal::DigitalOutPin<Port_A,
                          GPIO_PIN_2,
-                         GPIO_MODE_AF_PP,
-                         GPIO_PULLUP,
+                         GPIO_MODE_OUTPUT_PP,
+                         GPIO_NOPULL,
                          GPIO_SPEED_FREQ_HIGH,
                          0,
                          gpioa_clk_enable> it8951_cs_select; /* D10 / PA2 */
+miyo::hal::DigitalOutPin<Port_A,
+                         GPIO_PIN_15,
+                         GPIO_MODE_OUTPUT_PP,
+                         GPIO_NOPULL,
+                         GPIO_SPEED_FREQ_LOW,
+                         0,
+                         gpioa_clk_enable> it8951_nreset; /* D9 / PA15 */
+miyo::hal::DigitalInPin <Port_B,
+                         GPIO_PIN_2,
+                         GPIO_MODE_INPUT,
+                         GPIO_PULLUP,
+                         GPIO_SPEED_FREQ_HIGH,
+                         0,
+                         gpiob_clk_enable> it8951_host_ready; /* D8 / PB2 */
 
 miyo::hal::UART<Usart_1,
                 115200,
@@ -121,6 +138,8 @@ miyo::hal::SPI<Spi_1,
 
 MIYO_LOG_DEVICE_UART_INSTANCE(uart1);
 
+miyo::driver::IT8951 it8951(spi1, it8951_cs_select, it8951_nreset, it8951_host_ready);
+
 /**************************************************************************************
  * MAIN
  **************************************************************************************/
@@ -134,6 +153,16 @@ int main(void)
   uart1.init();
 
   it8951_cs_select.init();
+  it8951_nreset.init();
+  it8951_host_ready.init();
+
+  it8951_cs_select.set();
+
+  it8951_nreset.clr();
+  HAL_Delay(100);
+  it8951_nreset.set();
+  HAL_Delay(100);
+
   spi1.init();
 
   for(;;)
@@ -144,6 +173,12 @@ int main(void)
     HAL_Delay(100);
 
     DBG_INFO("Hello Miyo!");
+
+    uint16_t data = 0;
+    it8951.command(miyo::driver::IT8951::Command::REG_RD);
+    it8951.write(0x0208);
+    it8951.read(data);
+    DBG_INFO("LISAR = 0x%04x", data);
   }
 }
 
