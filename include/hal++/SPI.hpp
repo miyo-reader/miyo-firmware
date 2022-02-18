@@ -25,6 +25,7 @@
 
 #include <hal++/interface/SPI.h>
 
+#include <hal++/interface/DigitalInPin.h>
 #include <hal++/interface/DigitalOutPin.h>
 
 extern "C" {
@@ -46,7 +47,7 @@ template <SPI_TypeDef * SPI_INSTANCE(), void ENABLE_PERIPHERAL_CLOCK(), uint32_t
 class SPI : public interface::SPI
 {
 public:
-  SPI(interface::DigitalOutPin & mosi, interface::DigitalOutPin & miso, interface::DigitalOutPin & sck)
+  SPI(interface::DigitalOutPin & mosi, interface::DigitalInPin & miso, interface::DigitalOutPin & sck)
   : _mosi{mosi}
   , _miso{miso}
   , _sck{sck}
@@ -59,7 +60,9 @@ public:
 
 
 private:
-  interface::DigitalOutPin & _mosi, & _miso, & _sck;
+  interface::DigitalOutPin & _mosi;
+  interface::DigitalInPin & _miso;
+  interface::DigitalOutPin & _sck;
   SPI_HandleTypeDef _spi_hdl; 
 };
 
