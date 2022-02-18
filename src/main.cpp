@@ -29,7 +29,7 @@ extern "C" {
 #include <hal++/DigitalInPin.hpp>
 #include <hal++/DigitalOutPin.hpp>
 
-#include <driver/IT8951_IO.h>
+#include <driver/IT8951/IT8951_IO.h>
 
 #include <logging/LoggerBase.hpp>
 #include <logging/LogDeviceUart.h>
