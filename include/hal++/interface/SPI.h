@@ -16,47 +16,42 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**************************************************************************************
- * NAMESPACE
- **************************************************************************************/
-
-namespace miyo::hal
-{
+#ifndef INCLUDE_HAL_INTERFACE_SPI_H_
+#define INCLUDE_HAL_INTERFACE_SPI_H_
 
 /**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
+ * INCLUDE
  **************************************************************************************/
 
-template <GPIO_TypeDef * PORT(), uint32_t PIN, uint32_t MODE, uint32_t PULL, uint32_t SPEED, uint32_t ALTERNATE, void ENABLE_PERIPHERAL_CLOCK()>
-void DigitalOutPin<PORT, PIN, MODE, PULL, SPEED, ALTERNATE, ENABLE_PERIPHERAL_CLOCK>::init()
-{
-  ENABLE_PERIPHERAL_CLOCK();
-
-  GPIO_InitTypeDef gpio_init_structure;
-
-  gpio_init_structure.Pin       = PIN;
-  gpio_init_structure.Mode      = MODE;
-  gpio_init_structure.Pull      = PULL;
-  gpio_init_structure.Speed     = SPEED;
-  gpio_init_structure.Alternate = ALTERNATE;
-
-  HAL_GPIO_Init(PORT(), &gpio_init_structure);
-}
-
-template <GPIO_TypeDef * PORT(), uint32_t PIN, uint32_t MODE, uint32_t PULL, uint32_t SPEED, uint32_t ALTERNATE, void ENABLE_PERIPHERAL_CLOCK()>
-void DigitalOutPin<PORT, PIN, MODE, PULL, SPEED, ALTERNATE, ENABLE_PERIPHERAL_CLOCK>::set()
-{
-  HAL_GPIO_WritePin(PORT(), PIN, GPIO_PIN_SET);
-}
-
-template <GPIO_TypeDef * PORT(), uint32_t PIN, uint32_t MODE, uint32_t PULL, uint32_t SPEED, uint32_t ALTERNATE, void ENABLE_PERIPHERAL_CLOCK()>
-void DigitalOutPin<PORT, PIN, MODE, PULL, SPEED, ALTERNATE, ENABLE_PERIPHERAL_CLOCK>::clr()
-{
-  HAL_GPIO_WritePin(PORT(), PIN, GPIO_PIN_RESET);
-}
+#include <cstdint>
+#include <unistd.h> /* size_t, ssize_t */
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* miyo::hal */
+namespace miyo::hal::interface
+{
+
+/**************************************************************************************
+ * CLASS DECLARATION
+ **************************************************************************************/
+
+class SPI
+{
+
+public:
+
+  virtual ~SPI() { }
+
+  virtual bool    init() = 0;
+  virtual ssize_t transfer(uint8_t const * const tx_buf, uint8_t * rx_buf, size_t const tx_buf_size) = 0;
+};
+
+/**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+} /* miyo::hal::interface */
+
+#endif /* INCLUDE_HAL_INTERFACE_SPI_H_ */

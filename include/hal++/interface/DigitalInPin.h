@@ -16,47 +16,35 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**************************************************************************************
- * NAMESPACE
- **************************************************************************************/
-
-namespace miyo::hal
-{
-
-/**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
- **************************************************************************************/
-
-template <GPIO_TypeDef * PORT(), uint32_t PIN, uint32_t MODE, uint32_t PULL, uint32_t SPEED, uint32_t ALTERNATE, void ENABLE_PERIPHERAL_CLOCK()>
-void DigitalOutPin<PORT, PIN, MODE, PULL, SPEED, ALTERNATE, ENABLE_PERIPHERAL_CLOCK>::init()
-{
-  ENABLE_PERIPHERAL_CLOCK();
-
-  GPIO_InitTypeDef gpio_init_structure;
-
-  gpio_init_structure.Pin       = PIN;
-  gpio_init_structure.Mode      = MODE;
-  gpio_init_structure.Pull      = PULL;
-  gpio_init_structure.Speed     = SPEED;
-  gpio_init_structure.Alternate = ALTERNATE;
-
-  HAL_GPIO_Init(PORT(), &gpio_init_structure);
-}
-
-template <GPIO_TypeDef * PORT(), uint32_t PIN, uint32_t MODE, uint32_t PULL, uint32_t SPEED, uint32_t ALTERNATE, void ENABLE_PERIPHERAL_CLOCK()>
-void DigitalOutPin<PORT, PIN, MODE, PULL, SPEED, ALTERNATE, ENABLE_PERIPHERAL_CLOCK>::set()
-{
-  HAL_GPIO_WritePin(PORT(), PIN, GPIO_PIN_SET);
-}
-
-template <GPIO_TypeDef * PORT(), uint32_t PIN, uint32_t MODE, uint32_t PULL, uint32_t SPEED, uint32_t ALTERNATE, void ENABLE_PERIPHERAL_CLOCK()>
-void DigitalOutPin<PORT, PIN, MODE, PULL, SPEED, ALTERNATE, ENABLE_PERIPHERAL_CLOCK>::clr()
-{
-  HAL_GPIO_WritePin(PORT(), PIN, GPIO_PIN_RESET);
-}
+#ifndef INCLUDE_HAL_INTERFACE_DIGITALINPIN_H_
+#define INCLUDE_HAL_INTERFACE_DIGITALINPIN_H_
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* miyo::hal */
+namespace miyo::hal::interface
+{
+
+/**************************************************************************************
+ * CLASS DECLARATION
+ **************************************************************************************/
+
+class DigitalInPin
+{
+public:
+
+  virtual ~DigitalInPin() { }
+
+  virtual void init() = 0;
+  virtual bool isSet() = 0;
+  inline  bool isClr() { return !isSet(); }
+};
+
+/**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+} /* miyo::hal::interface */
+
+#endif /* INCLUDE_HAL_INTERFACE_DIGITALINPIN_H_ */

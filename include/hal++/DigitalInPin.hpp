@@ -16,6 +16,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#ifndef INCLUDE_HAL_DIGITALINPIN_HPP_
+#define INCLUDE_HAL_DIGITALINPIN_HPP_
+
+/**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+#include <hal++/interface/DigitalInPin.h>
+
+#include <cstdint>
+
+extern "C" {
+#include "stm32l4xx_hal.h"
+}
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -24,39 +39,30 @@ namespace miyo::hal
 {
 
 /**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
+ * CLASS DECLARATION
  **************************************************************************************/
 
 template <GPIO_TypeDef * PORT(), uint32_t PIN, uint32_t MODE, uint32_t PULL, uint32_t SPEED, uint32_t ALTERNATE, void ENABLE_PERIPHERAL_CLOCK()>
-void DigitalOutPin<PORT, PIN, MODE, PULL, SPEED, ALTERNATE, ENABLE_PERIPHERAL_CLOCK>::init()
+class DigitalInPin : public interface::DigitalInPin
 {
-  ENABLE_PERIPHERAL_CLOCK();
+public:
 
-  GPIO_InitTypeDef gpio_init_structure;
+  virtual ~DigitalInPin() { }
 
-  gpio_init_structure.Pin       = PIN;
-  gpio_init_structure.Mode      = MODE;
-  gpio_init_structure.Pull      = PULL;
-  gpio_init_structure.Speed     = SPEED;
-  gpio_init_structure.Alternate = ALTERNATE;
-
-  HAL_GPIO_Init(PORT(), &gpio_init_structure);
-}
-
-template <GPIO_TypeDef * PORT(), uint32_t PIN, uint32_t MODE, uint32_t PULL, uint32_t SPEED, uint32_t ALTERNATE, void ENABLE_PERIPHERAL_CLOCK()>
-void DigitalOutPin<PORT, PIN, MODE, PULL, SPEED, ALTERNATE, ENABLE_PERIPHERAL_CLOCK>::set()
-{
-  HAL_GPIO_WritePin(PORT(), PIN, GPIO_PIN_SET);
-}
-
-template <GPIO_TypeDef * PORT(), uint32_t PIN, uint32_t MODE, uint32_t PULL, uint32_t SPEED, uint32_t ALTERNATE, void ENABLE_PERIPHERAL_CLOCK()>
-void DigitalOutPin<PORT, PIN, MODE, PULL, SPEED, ALTERNATE, ENABLE_PERIPHERAL_CLOCK>::clr()
-{
-  HAL_GPIO_WritePin(PORT(), PIN, GPIO_PIN_RESET);
-}
+  virtual void init() override;
+  virtual bool isSet() override;
+};
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
 } /* miyo::hal */
+
+/**************************************************************************************
+ * TEMPLATE IMPLEMENTATION
+ **************************************************************************************/
+
+#include "DigitalInPin.ipp"
+
+#endif /* INCLUDE_HAL_DIGITALINPIN_HPP_ */
