@@ -138,7 +138,7 @@ miyo::hal::SPI<Spi_1,
 
 MIYO_LOG_DEVICE_UART_INSTANCE(uart1);
 
-miyo::driver::IT8951::IT8951_IO it8951_io(spi1, it8951_cs_select, it8951_nreset, it8951_host_ready);
+miyo::driver::IT8951::IT8951_IO it8951_io(spi1, it8951_cs_select, it8951_nreset, it8951_host_ready, [](uint32_t const ms) { HAL_Delay(ms);});
 
 /**************************************************************************************
  * MAIN
@@ -151,19 +151,7 @@ int main(void)
 
   led_green.init();
   uart1.init();
-
-  it8951_cs_select.init();
-  it8951_nreset.init();
-  it8951_host_ready.init();
-
-  it8951_cs_select.set();
-
-  it8951_nreset.clr();
-  HAL_Delay(100);
-  it8951_nreset.set();
-  HAL_Delay(100);
-
-  spi1.init();
+  it8951_io.init();
 
   for(;;)
   {

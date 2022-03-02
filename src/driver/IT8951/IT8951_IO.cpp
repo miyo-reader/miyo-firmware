@@ -46,16 +46,33 @@ namespace miyo::driver::IT8951
 IT8951_IO::IT8951_IO(hal::interface::SPI & spi,
                      hal::interface::DigitalOutPin & cs,
                      hal::interface::DigitalOutPin & nreset,
-                     hal::interface::DigitalInPin & host_ready)
+                     hal::interface::DigitalInPin & host_ready,
+                     DelayFuncMs const delay_func)
 : _spi{spi}
 , _cs{cs}
 , _nreset{nreset}
 , _host_ready{host_ready}
+, _delay_func{delay_func}
 { }
 
 /**************************************************************************************
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
+
+IT8951::Error IT8951_IO::init()
+{
+  _cs.init();
+  _nreset.init();
+  _host_ready.init();
+  _spi.init();
+
+  _cs.set();
+
+  _nreset.clr();
+  _delay_func(100);
+  _nreset.set();
+  _delay_func(100);
+}
 
 IT8951::Error IT8951_IO::read(uint16_t & data)
 {
