@@ -26,6 +26,7 @@
 #include <functional>
 
 #include <hal++/interface/SPI.h>
+#include <hal++/interface/Delay.h>
 #include <hal++/interface/DigitalInPin.h>
 #include <hal++/interface/DigitalOutPin.h>
 
@@ -39,12 +40,6 @@ namespace miyo::driver::IT8951
 {
 
 /**************************************************************************************
- * TYPEDEF
- **************************************************************************************/
-
-typedef std::function<void(uint32_t const)> DelayFuncMs;
-
-/**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
@@ -56,7 +51,7 @@ public:
             hal::interface::DigitalOutPin & cs,
             hal::interface::DigitalOutPin & nreset,
             hal::interface::DigitalInPin & host_ready,
-            DelayFuncMs const delay_func);
+            hal::interface::Delay & delay);
 
 
   Error init   ();
@@ -80,7 +75,7 @@ private:
   hal::interface::DigitalOutPin & _cs;
   hal::interface::DigitalOutPin & _nreset;
   hal::interface::DigitalInPin & _host_ready;
-  DelayFuncMs const _delay_func;
+  hal::interface::Delay & _delay;
 
   enum class Preamble : uint16_t
   {
