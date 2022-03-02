@@ -32,6 +32,8 @@ target_sources(${MIYO_READER}
 
   src/driver/IT8951/IT8951_IO.cpp
 
+  src/hal++/Delay.cpp
+
   src/main.cpp
   src/stm32l4xx_hal_msp.c
   src/stm32l4xx_it.c
