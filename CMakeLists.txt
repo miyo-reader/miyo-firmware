@@ -30,6 +30,8 @@ target_include_directories(${MIYO_READER} PUBLIC include)
 target_sources(${MIYO_READER}
   PUBLIC
 
+  src/driver/IT8951/IT8951_IO.cpp
+
   src/main.cpp
   src/stm32l4xx_hal_msp.c
   src/stm32l4xx_it.c
