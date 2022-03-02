@@ -1,5 +1,5 @@
 /**
- * miyo-firmware is a firmware for an open software/open hardware ebook reader.
+ * Miyo - a open software/open hardware ebook - Reader (Firmware)
  * Copyright (C) 2021 Alexander Entinger, LXRobotics
  *
  * This program is free software: you can redistribute it and/or modify
