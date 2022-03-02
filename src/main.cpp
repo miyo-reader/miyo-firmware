@@ -24,6 +24,7 @@ extern "C" {
 #include "stm32l4xx_hal.h"
 }
 
+#include <hal++/Delay.h>
 #include <hal++/SPI.hpp>
 #include <hal++/UART.hpp>
 #include <hal++/DigitalInPin.hpp>
@@ -53,6 +54,8 @@ static void usart1_clk_enable() { __HAL_RCC_USART1_CLK_ENABLE(); }
 /**************************************************************************************
  * GLOBAL VARIABLES
  **************************************************************************************/
+
+miyo::hal::Delay delay;
 
 miyo::hal::DigitalOutPin<Port_B,
                          GPIO_PIN_14,
@@ -138,7 +141,7 @@ miyo::hal::SPI<Spi_1,
 
 MIYO_LOG_DEVICE_UART_INSTANCE(uart1);
 
-miyo::driver::IT8951::IT8951_IO it8951_io(spi1, it8951_cs_select, it8951_nreset, it8951_host_ready, [](uint32_t const ms) { HAL_Delay(ms);});
+miyo::driver::IT8951::IT8951_IO it8951_io(spi1, it8951_cs_select, it8951_nreset, it8951_host_ready, delay);
 
 /**************************************************************************************
  * MAIN
