@@ -88,6 +88,20 @@ IT8951::Error IT8951_IO::read(uint16_t & data)
   return Error::None;
 }
 
+IT8951::Error IT8951_IO::read(uint16_t * buf, size_t const num_words)
+{
+  CHECK_RETURN_VAL(waitForHostReady());
+  select();
+  CHECK_RETURN_VAL(spi_send(Preamble::Read));
+  CHECK_RETURN_VAL(waitForHostReady());
+  CHECK_RETURN_VAL(spi_send(0)); /* Dummy Word. */
+  CHECK_RETURN_VAL(waitForHostReady());
+  for (size_t w = 0; w < num_words; w++)
+    CHECK_RETURN_VAL(spi_recv(buf[w]));
+  deselect();
+  return Error::None;
+}
+
 IT8951::Error IT8951_IO::write(uint16_t const data)
 {
   CHECK_RETURN_VAL(waitForHostReady());

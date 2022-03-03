@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDE_DRIVER_IT8951_H_
-#define INCLUDE_DRIVER_IT8951_H_
+#ifndef INCLUDE_DRIVER_IT8951_IO_H_
+#define INCLUDE_DRIVER_IT8951_IO_H_
 
 /**************************************************************************************
  * INCLUDE
@@ -57,6 +57,7 @@ public:
   Error init   ();
 
   Error read   (uint16_t & data);
+  Error read   (uint16_t * buf, size_t const num_words);
   Error write  (uint16_t const data);
   Error command(Command const cmd);
 
@@ -101,4 +102,4 @@ private:
 
 } /* miyo::driver::IT8951 */
 
-#endif /* INCLUDE_DRIVER_IT8951_H_ */
+#endif /* INCLUDE_DRIVER_IT8951_IO_H_ */
