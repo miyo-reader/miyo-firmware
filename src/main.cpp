@@ -30,6 +30,7 @@ extern "C" {
 #include <hal++/DigitalInPin.hpp>
 #include <hal++/DigitalOutPin.hpp>
 
+#include <driver/IT8951/IT8951.h>
 #include <driver/IT8951/IT8951_IO.h>
 
 #include <logging/LoggerBase.hpp>
@@ -142,6 +143,7 @@ miyo::hal::SPI<Spi_1,
 MIYO_LOG_DEVICE_UART_INSTANCE(uart1);
 
 miyo::driver::IT8951::IT8951_IO it8951_io(spi1, it8951_cs_select, it8951_nreset, it8951_host_ready, delay);
+miyo::driver::IT8951::IT8951    it8951   (it8951_io);
 
 /**************************************************************************************
  * MAIN
@@ -170,6 +172,15 @@ int main(void)
     it8951_io.write(0x0208);
     it8951_io.read(data);
     DBG_INFO("LISAR = 0x%04x", data);
+
+    miyo::driver::IT8951::DeviceInfo device_info;
+    it8951.getDeviceInfo(device_info);
+    DBG_INFO("Device Info:\n      Width:  %d px\n      Height: %d px\n      ImageBuffer : 0x%08X\n      FW Version  : %s\n      LUT Version : %s",
+             device_info.panel_width,
+             device_info.panel_height,
+             (static_cast<uint32_t>(device_info.img_buf_address_high) << 16)| device_info.img_buf_address_low,
+             device_info.fw_version,
+             device_info.lut_version);
   }
 }
 

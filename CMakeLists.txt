@@ -30,6 +30,7 @@ target_include_directories(${MIYO_READER} PUBLIC include)
 target_sources(${MIYO_READER}
   PUBLIC
 
+  src/driver/IT8951/IT8951.cpp
   src/driver/IT8951/IT8951_IO.cpp
 
   src/hal++/Delay.cpp
