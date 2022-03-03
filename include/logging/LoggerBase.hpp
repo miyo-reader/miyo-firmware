@@ -81,7 +81,7 @@ enum class LogLevel
  * CONSTANT
  **************************************************************************************/
 
-static constexpr size_t DEFAULT_LOG_BUFFER_SIZE = 80;
+static constexpr size_t DEFAULT_LOG_BUFFER_SIZE = 160;
 
 /**************************************************************************************
  * CLASS DECLARATION
