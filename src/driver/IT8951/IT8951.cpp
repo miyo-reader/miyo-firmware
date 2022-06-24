@@ -69,6 +69,22 @@ Error IT8951::setImageBufferBaseAddr(uint32_t const img_buf_base_addr)
   return Error::None;
 }
 
+std::tuple<Error, uint16_t> IT8951::readRegister(uint16_t const reg_addr)
+{
+  uint16_t reg_val = 0;
+
+#define CHECK_RETURN_VAL_READ_REGISTER(expr) \
+  if (auto ret = (expr); ret != Error::None) { \
+    return std::tuple(ret, reg_val); \
+  }
+
+  CHECK_RETURN_VAL_READ_REGISTER(_io.command(Command::REG_RD));
+  CHECK_RETURN_VAL_READ_REGISTER(_io.write(reg_addr));
+  CHECK_RETURN_VAL_READ_REGISTER(_io.read(reg_val));
+
+  return std::tuple(Error::None, reg_val);
+}
+
 /**************************************************************************************
  * PRIVATE MEMBER FUNCTIONS
  **************************************************************************************/

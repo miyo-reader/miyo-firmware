@@ -61,6 +61,8 @@ public:
   Error getDeviceInfo(DeviceInfo & dev_info);
   Error setImageBufferBaseAddr(uint32_t const img_buf_base_addr);
 
+  std::tuple<Error, uint16_t> readRegister(uint16_t const reg_addr);
+
 private:
 
   IT8951_IO & _io;
