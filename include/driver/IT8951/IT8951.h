@@ -59,7 +59,7 @@ public:
 
 
   Error getDeviceInfo(DeviceInfo & dev_info);
-
+  Error setImageBufferBaseAddr(uint32_t const img_buf_base_addr);
 
 private:
 

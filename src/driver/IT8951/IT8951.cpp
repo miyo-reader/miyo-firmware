@@ -59,6 +59,16 @@ Error IT8951::getDeviceInfo(DeviceInfo & dev_info)
   return Error::None;
 }
 
+Error IT8951::setImageBufferBaseAddr(uint32_t const img_buf_base_addr)
+{
+  uint16_t const reg_val_high = static_cast<uint16_t>((img_buf_base_addr >> 16) & 0x0000FFFF);
+  uint16_t const reg_val_low  = static_cast<uint16_t>((img_buf_base_addr >>  0) & 0x0000FFFF);
+
+  CHECK_RETURN_VAL(writeRegister(LISAR + 2, reg_val_high));
+  CHECK_RETURN_VAL(writeRegister(LISAR + 0, reg_val_low));
+  return Error::None;
+}
+
 /**************************************************************************************
  * PRIVATE MEMBER FUNCTIONS
  **************************************************************************************/
