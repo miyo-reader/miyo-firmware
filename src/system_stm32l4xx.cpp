@@ -90,6 +90,10 @@
 
 #include "stm32l4xx.h"
 
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 /**
   * @}
   */
@@ -348,3 +352,6 @@ void SystemCoreClockUpdate(void)
   * @}
   */
 
+#ifdef __cplusplus
+}
+#endif

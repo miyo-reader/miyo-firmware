@@ -21,6 +21,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l4xx_it.h"
 
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 /** @addtogroup STM32L4xx_HAL_Examples
   * @{
   */
@@ -164,3 +168,6 @@ void SysTick_Handler(void)
   * @}
   */
 
+#ifdef __cplusplus
+}
+#endif

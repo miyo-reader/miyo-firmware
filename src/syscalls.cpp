@@ -30,6 +30,9 @@
 #include <sys/time.h>
 #include <sys/times.h>
 
+#ifdef __cplusplus
+ extern "C" {
+#endif
 
 /* Variables */
 //#undef errno
@@ -179,3 +182,7 @@ int _execve(char *name, char **argv, char **env)
 	errno = ENOMEM;
 	return -1;
 }
+
+#ifdef __cplusplus
+}
+#endif

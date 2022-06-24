@@ -24,6 +24,10 @@
 #include <errno.h>
 #include <stdio.h>
 
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 /* Variables */
 extern int errno;
 register char * stack_ptr asm("sp");
@@ -55,3 +59,6 @@ caddr_t _sbrk(int incr)
 	return (caddr_t) prev_heap_end;
 }
 
+#ifdef __cplusplus
+}
+#endif
