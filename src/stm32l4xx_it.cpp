@@ -21,6 +21,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l4xx_it.h"
 
+#include "stm32l4xx_hal.h"
+
 #ifdef __cplusplus
  extern "C" {
 #endif
