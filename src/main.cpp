@@ -167,11 +167,13 @@ int main(void)
 
     DBG_INFO("Hello Miyo!");
 
-    uint16_t data = 0;
-    it8951_io.command(miyo::driver::IT8951::Command::REG_RD);
-    it8951_io.write(miyo::driver::IT8951::LISAR);
-    it8951_io.read(data);
-    DBG_INFO("LISAR = 0x%04x", data);
+    {
+      auto [err, lisar_reg_val] = it8951.readRegister(miyo::driver::IT8951::LISAR);
+      if (err != miyo::driver::IT8951::Error::None)
+        DBG_INFO("LISAR = 0x%04x", lisar_reg_val);
+      else
+        DBG_ERROR("it8951.readRegister failed with %d", static_cast<int>(err));
+    }
 
     miyo::driver::IT8951::DeviceInfo device_info;
     it8951.getDeviceInfo(device_info);
