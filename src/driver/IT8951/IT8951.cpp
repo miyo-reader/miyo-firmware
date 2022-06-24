@@ -22,6 +22,8 @@
 
 #include <driver/IT8951/IT8951.h>
 
+#include <cstring>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -52,11 +54,20 @@ IT8951::IT8951(IT8951_IO & io)
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-Error IT8951::getDeviceInfo(DeviceInfo & dev_info)
+std::tuple<Error, DeviceInfo> IT8951::getDeviceInfo()
 {
-  CHECK_RETURN_VAL(_io.command(Command::USERDEF_GET_DEVICE_SYSTEM_INFO));
-  CHECK_RETURN_VAL(_io.read(reinterpret_cast<uint16_t *>(&dev_info), sizeof(DeviceInfo) / 2));
-  return Error::None;
+  DeviceInfo dev_info;
+  memset(&dev_info, 0, sizeof(DeviceInfo));
+
+#define CHECK_RETURN_VAL_GET_DEVICE_INFO(expr) \
+  if (auto ret = (expr); ret != Error::None) { \
+    return std::tuple(ret, dev_info); \
+  }
+
+  CHECK_RETURN_VAL_GET_DEVICE_INFO(_io.command(Command::USERDEF_GET_DEVICE_SYSTEM_INFO));
+  CHECK_RETURN_VAL_GET_DEVICE_INFO(_io.read(reinterpret_cast<uint16_t *>(&dev_info), sizeof(DeviceInfo) / 2));
+
+  return std::tuple(Error::None, dev_info);
 }
 
 Error IT8951::setImageBufferBaseAddr(uint32_t const img_buf_base_addr)

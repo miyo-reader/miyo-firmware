@@ -175,14 +175,18 @@ int main(void)
         DBG_ERROR("it8951.readRegister failed with %d", static_cast<int>(err));
     }
 
-    miyo::driver::IT8951::DeviceInfo device_info;
-    it8951.getDeviceInfo(device_info);
-    DBG_INFO("Device Info:\n      Width:  %d px\n      Height: %d px\n      ImageBuffer : 0x%08X\n      FW Version  : %s\n      LUT Version : %s",
-             device_info.panel_width,
-             device_info.panel_height,
-             (static_cast<uint32_t>(device_info.img_buf_address_high) << 16)| device_info.img_buf_address_low,
-             device_info.fw_version,
-             device_info.lut_version);
+    {
+      auto [err, device_info] = it8951.getDeviceInfo();
+      if (err != miyo::driver::IT8951::Error::None)
+        DBG_INFO("Device Info:\n      Width:  %d px\n      Height: %d px\n      ImageBuffer : 0x%08X\n      FW Version  : %s\n      LUT Version : %s",
+                device_info.panel_width,
+                device_info.panel_height,
+                (static_cast<uint32_t>(device_info.img_buf_address_high) << 16)| device_info.img_buf_address_low,
+                device_info.fw_version,
+                device_info.lut_version);
+      else
+        DBG_ERROR("it8951.getDeviceInfo failed with %d", static_cast<int>(err));
+    }
   }
 }
 
