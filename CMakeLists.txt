@@ -36,11 +36,11 @@ target_sources(${MIYO_READER}
   src/hal++/Delay.cpp
 
   src/main.cpp
-  src/stm32l4xx_hal_msp.c
-  src/stm32l4xx_it.c
-  src/syscalls.c
-  src/sysmem.c
-  src/system_stm32l4xx.c
+  src/stm32l4xx_hal_msp.cpp
+  src/stm32l4xx_it.cpp
+  src/syscalls.cpp
+  src/sysmem.cpp
+  src/system_stm32l4xx.cpp
 
   startup/startup_stm32l4s5aiix.s
 )
