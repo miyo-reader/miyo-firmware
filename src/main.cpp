@@ -209,9 +209,12 @@ int main(void)
   */
 void SystemClock_Config(void)
 {
-  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct;
+  RCC_OscInitTypeDef RCC_OscInitStruct;
   
+  memset(&RCC_ClkInitStruct, 0, sizeof(RCC_ClkInitStruct));
+  memset(&RCC_OscInitStruct, 0, sizeof(RCC_OscInitStruct));
+
   /* Enable voltage range 1 boost mode for frequency above 80 Mhz */
   __HAL_RCC_PWR_CLK_ENABLE();
   HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1_BOOST);
