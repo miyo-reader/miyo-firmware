@@ -73,6 +73,8 @@ IT8951::Error IT8951_IO::init()
   _delay.delay(100ms);
   _nreset.set();
   _delay.delay(100ms);
+
+  return Error::None;
 }
 
 IT8951::Error IT8951_IO::read(uint16_t & data)
