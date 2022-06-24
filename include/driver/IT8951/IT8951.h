@@ -65,6 +65,7 @@ private:
 
   IT8951_IO & _io;
 
+  Error writeRegister(uint16_t const reg_addr, uint16_t const reg_val);
 };
 
 /**************************************************************************************

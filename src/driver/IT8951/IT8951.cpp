@@ -60,6 +60,18 @@ Error IT8951::getDeviceInfo(DeviceInfo & dev_info)
 }
 
 /**************************************************************************************
+ * PRIVATE MEMBER FUNCTIONS
+ **************************************************************************************/
+
+Error IT8951::writeRegister(uint16_t const reg_addr, uint16_t const reg_val)
+{
+  CHECK_RETURN_VAL(_io.command(Command::REG_WR));
+  CHECK_RETURN_VAL(_io.write(reg_addr));
+  CHECK_RETURN_VAL(_io.write(reg_val));
+  return Error::None;
+}
+
+/**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
