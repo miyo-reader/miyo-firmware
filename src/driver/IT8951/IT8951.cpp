@@ -80,6 +80,33 @@ Error IT8951::setImageBufferBaseAddr(uint32_t const img_buf_base_addr)
   return Error::None;
 }
 
+Error IT8951::loadImageAreaStart(EndianType const endian_type,
+                                 PixelMode const pixel_mode,
+                                 RotateMode const rotate_mode,
+                                 uint16_t const x_start,
+                                 uint16_t const y_start,
+                                 uint16_t const width,
+                                 uint16_t const height)
+{
+  CHECK_RETURN_VAL(_io.command(Command::LD_IMG_AREA));
+
+  size_t const CMD_ARG_SIZE = 5;
+  uint16_t const cmd_arg[CMD_ARG_SIZE] =
+  {
+    (static_cast<uint16_t>(endian_type) << 8) | (static_cast<uint16_t>(pixel_mode) << 4) | static_cast<uint16_t>(rotate_mode),
+    x_start,
+    y_start,
+    width,
+    height
+  };
+
+  for (size_t i = 0; i < CMD_ARG_SIZE; i++) {
+    CHECK_RETURN_VAL(_io.write(cmd_arg[i]));
+  }
+
+  return Error::None;
+}
+
 std::tuple<Error, uint16_t> IT8951::readRegister(uint16_t const reg_addr)
 {
   uint16_t reg_val = 0;
