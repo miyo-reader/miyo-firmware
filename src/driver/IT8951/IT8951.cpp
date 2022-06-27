@@ -90,6 +90,8 @@ Error IT8951::loadImageAreaStart(EndianType const endian_type,
 {
   CHECK_RETURN_VAL(_io.command(Command::LD_IMG_AREA));
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnarrowing"
   size_t const CMD_ARG_SIZE = 5;
   uint16_t const cmd_arg[CMD_ARG_SIZE] =
   {
@@ -99,6 +101,7 @@ Error IT8951::loadImageAreaStart(EndianType const endian_type,
     width,
     height
   };
+#pragma GCC diagnostic pop
 
   for (size_t i = 0; i < CMD_ARG_SIZE; i++) {
     CHECK_RETURN_VAL(_io.write(cmd_arg[i]));
