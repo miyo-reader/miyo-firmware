@@ -42,6 +42,8 @@ extern "C" {
 
 static void SystemClock_Config();
 
+static void system_panic(char const * fmt,  ...);
+
 constexpr SPI_TypeDef * Spi_1() { return SPI1; }
 constexpr GPIO_TypeDef * Port_A() { return GPIOA; }
 constexpr GPIO_TypeDef * Port_B() { return GPIOB; }
@@ -162,22 +164,20 @@ int main(void)
 
   uint16_t lisar_reg_val = 0;
   std::tie (it8951_rc, lisar_reg_val) = it8951.readRegister(miyo::driver::IT8951::LISAR);
-  if (it8951_rc == miyo::driver::IT8951::Error::None)
-    DBG_INFO("LISAR = 0x%04x", lisar_reg_val);
-  else
-    DBG_ERROR("it8951.readRegister failed with %d", static_cast<int>(it8951_rc));
+  if (it8951_rc != miyo::driver::IT8951::Error::None)
+    system_panic("it8951.readRegister failed with %d", static_cast<int>(it8951_rc));
+  DBG_INFO("LISAR = 0x%04x", lisar_reg_val);
 
   miyo::driver::IT8951::DeviceInfo device_info;
   std::tie (it8951_rc, device_info) = it8951.getDeviceInfo();
-  if (it8951_rc == miyo::driver::IT8951::Error::None)
-    DBG_INFO("Device Info:\n      Width:  %d px\n      Height: %d px\n      ImageBuffer : 0x%08X\n      FW Version  : %s\n      LUT Version : %s",
-            device_info.panel_width,
-            device_info.panel_height,
-            (static_cast<uint32_t>(device_info.img_buf_address_high) << 16)| device_info.img_buf_address_low,
-            device_info.fw_version,
-            device_info.lut_version);
-  else
-    DBG_ERROR("it8951.getDeviceInfo failed with %d", static_cast<int>(it8951_rc));
+  if (it8951_rc != miyo::driver::IT8951::Error::None)
+   system_panic("it8951.getDeviceInfo failed with %d", static_cast<int>(it8951_rc));
+  DBG_INFO("Device Info:\n      Width:  %d px\n      Height: %d px\n      ImageBuffer : 0x%08X\n      FW Version  : %s\n      LUT Version : %s",
+              device_info.panel_width,
+              device_info.panel_height,
+              (static_cast<uint32_t>(device_info.img_buf_address_high) << 16)| device_info.img_buf_address_low,
+              device_info.fw_version,
+              device_info.lut_version);
 
   for(;;)
   {
@@ -193,6 +193,24 @@ int main(void)
 /**************************************************************************************
  * FUNCTION DEFINITION
  **************************************************************************************/
+
+void system_panic(char const * fmt,  ...)
+{
+  DBG_ERROR("system_panic:");
+
+  va_list args;
+  va_start(args, fmt);
+  DBG_ERROR(fmt, args);
+  va_end(args);
+
+  for (;;)
+  {
+    led_green.set();
+    HAL_Delay(50);
+    led_green.clr();
+    HAL_Delay(50);
+  }
+}
 
 /**
   * @brief  System Clock Configuration
