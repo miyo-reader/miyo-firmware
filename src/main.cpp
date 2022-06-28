@@ -158,6 +158,27 @@ int main(void)
   uart1.init();
   it8951_io.init();
 
+  miyo::driver::IT8951::Error it8951_rc = miyo::driver::IT8951::Error::None;
+
+  uint16_t lisar_reg_val = 0;
+  std::tie (it8951_rc, lisar_reg_val) = it8951.readRegister(miyo::driver::IT8951::LISAR);
+  if (it8951_rc != miyo::driver::IT8951::Error::None)
+    DBG_INFO("LISAR = 0x%04x", lisar_reg_val);
+  else
+    DBG_ERROR("it8951.readRegister failed with %d", static_cast<int>(it8951_rc));
+
+  miyo::driver::IT8951::DeviceInfo device_info;
+  std::tie (it8951_rc, device_info) = it8951.getDeviceInfo();
+  if (it8951_rc != miyo::driver::IT8951::Error::None)
+    DBG_INFO("Device Info:\n      Width:  %d px\n      Height: %d px\n      ImageBuffer : 0x%08X\n      FW Version  : %s\n      LUT Version : %s",
+            device_info.panel_width,
+            device_info.panel_height,
+            (static_cast<uint32_t>(device_info.img_buf_address_high) << 16)| device_info.img_buf_address_low,
+            device_info.fw_version,
+            device_info.lut_version);
+  else
+    DBG_ERROR("it8951.getDeviceInfo failed with %d", static_cast<int>(it8951_rc));
+
   for(;;)
   {
     led_green.set();
@@ -166,27 +187,6 @@ int main(void)
     HAL_Delay(100);
 
     DBG_INFO("Hello Miyo!");
-
-    {
-      auto [err, lisar_reg_val] = it8951.readRegister(miyo::driver::IT8951::LISAR);
-      if (err != miyo::driver::IT8951::Error::None)
-        DBG_INFO("LISAR = 0x%04x", lisar_reg_val);
-      else
-        DBG_ERROR("it8951.readRegister failed with %d", static_cast<int>(err));
-    }
-
-    {
-      auto [err, device_info] = it8951.getDeviceInfo();
-      if (err != miyo::driver::IT8951::Error::None)
-        DBG_INFO("Device Info:\n      Width:  %d px\n      Height: %d px\n      ImageBuffer : 0x%08X\n      FW Version  : %s\n      LUT Version : %s",
-                device_info.panel_width,
-                device_info.panel_height,
-                (static_cast<uint32_t>(device_info.img_buf_address_high) << 16)| device_info.img_buf_address_low,
-                device_info.fw_version,
-                device_info.lut_version);
-      else
-        DBG_ERROR("it8951.getDeviceInfo failed with %d", static_cast<int>(err));
-    }
   }
 }
 
