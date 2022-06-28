@@ -194,6 +194,13 @@ int main(void)
   if (it8951_rc != miyo::driver::IT8951::Error::None)
     system_panic("it8951.loadImageAreaStart failed with %d", static_cast<int>(it8951_rc));
 
+  /* TODO: Actually load image. */
+
+  it8951_rc = it8951.loadImageEnd();
+  if (it8951_rc != miyo::driver::IT8951::Error::None)
+    system_panic("it8951.loadImageEnd failed with %d", static_cast<int>(it8951_rc));
+
+
   for(;;)
   {
     led_green.set();
