@@ -87,6 +87,7 @@ public:
                                                    uint16_t const y_start,
                                                    uint16_t const width,
                                                    uint16_t const height);
+  Error                         loadImageEnd();
 
 
   std::tuple<Error, uint16_t> readRegister (uint16_t const reg_addr);

@@ -110,6 +110,12 @@ Error IT8951::loadImageAreaStart(EndianType const endian_type,
   return Error::None;
 }
 
+Error IT8951::loadImageEnd()
+{
+  CHECK_RETURN_VAL(_io.command(Command::LD_IMG_END));
+  return Error::None;
+}
+
 std::tuple<Error, uint16_t> IT8951::readRegister(uint16_t const reg_addr)
 {
   uint16_t reg_val = 0;
