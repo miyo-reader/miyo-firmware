@@ -172,12 +172,17 @@ int main(void)
   std::tie (it8951_rc, device_info) = it8951.getDeviceInfo();
   if (it8951_rc != miyo::driver::IT8951::Error::None)
    system_panic("it8951.getDeviceInfo failed with %d", static_cast<int>(it8951_rc));
+  uint32_t const IT8951_IMG_BUF_BASE_ADDR = (static_cast<uint32_t>(device_info.img_buf_address_high) << 16)| device_info.img_buf_address_low;
   DBG_INFO("Device Info:\n      Width:  %d px\n      Height: %d px\n      ImageBuffer : 0x%08X\n      FW Version  : %s\n      LUT Version : %s",
               device_info.panel_width,
               device_info.panel_height,
-              (static_cast<uint32_t>(device_info.img_buf_address_high) << 16)| device_info.img_buf_address_low,
+              IT8951_IMG_BUF_BASE_ADDR,
               device_info.fw_version,
               device_info.lut_version);
+
+  if (it8951_rc = it8951.setImageBufferBaseAddr(IT8951_IMG_BUF_BASE_ADDR); it8951_rc != miyo::driver::IT8951::Error::None)
+    system_panic("it8951.setImageBufferBaseAddr failed with %d", static_cast<int>(it8951_rc));
+
 
   for(;;)
   {
