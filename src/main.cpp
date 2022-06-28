@@ -180,9 +180,19 @@ int main(void)
               device_info.fw_version,
               device_info.lut_version);
 
-  if (it8951_rc = it8951.setImageBufferBaseAddr(IT8951_IMG_BUF_BASE_ADDR); it8951_rc != miyo::driver::IT8951::Error::None)
+  it8951_rc = it8951.setImageBufferBaseAddr(IT8951_IMG_BUF_BASE_ADDR);
+  if (it8951_rc != miyo::driver::IT8951::Error::None)
     system_panic("it8951.setImageBufferBaseAddr failed with %d", static_cast<int>(it8951_rc));
 
+  it8951_rc = it8951.loadImageAreaStart(miyo::driver::IT8951::IT8951::EndianType::Little,
+                                        miyo::driver::IT8951::IT8951::PixelMode::Mode_4_BPP,
+                                        miyo::driver::IT8951::IT8951::RotateMode::NoRotation,
+                                        0 /* x_start */,
+                                        0 /* y_start */,
+                                        device_info.panel_width,
+                                        device_info.panel_height);
+  if (it8951_rc != miyo::driver::IT8951::Error::None)
+    system_panic("it8951.loadImageAreaStart failed with %d", static_cast<int>(it8951_rc));
 
   for(;;)
   {
