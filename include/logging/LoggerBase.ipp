@@ -54,6 +54,16 @@ void LoggerBase<LOG_DEVICE, LOG_BUFFER_SIZE>::log(LogLevel const lvl, char const
   log_str("\r\n");
 }
 
+template<interface::LogDevice & LOG_DEVICE(), size_t LOG_BUFFER_SIZE>
+void LoggerBase<LOG_DEVICE, LOG_BUFFER_SIZE>::log(LogLevel const lvl, char const * fmt, va_list args)
+{
+  log_level(lvl);
+
+  log_message(fmt, args);
+
+  log_str("\r\n");
+}
+
 /**************************************************************************************
  * PRIVATE MEMBER FUNCTIONS
  **************************************************************************************/

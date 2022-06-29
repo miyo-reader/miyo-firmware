@@ -95,6 +95,7 @@ public:
   static LoggerBase & instance();
 
   void log(LogLevel const lvl, char const * fmt, ...);
+  void log(LogLevel const lvl, char const * fmt, va_list args);
 
   void operator = (LoggerBase &) = delete;
 

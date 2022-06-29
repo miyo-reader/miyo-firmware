@@ -73,6 +73,8 @@ IT8951::Error IT8951_IO::init()
   _delay.delay(100ms);
   _nreset.set();
   _delay.delay(100ms);
+
+  return Error::None;
 }
 
 IT8951::Error IT8951_IO::read(uint16_t & data)
@@ -138,10 +140,16 @@ IT8951::Error IT8951_IO::spi_send(Preamble const preamble)
 {
   uint16_t preamble_buf = ntohs(static_cast<uint16_t>(preamble));
   size_t const PREAMBLE_BUF_NUM_WORDS = sizeof(preamble_buf) / 2;
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wignored-qualifiers"
+
   if (PREAMBLE_BUF_NUM_WORDS != _spi.transfer((uint8_t const * const)&preamble_buf, (uint8_t *)&preamble_buf, PREAMBLE_BUF_NUM_WORDS))
     return Error::Spi;
   else
     return Error::None;
+
+#pragma GCC diagnostic pop
 }
 
 IT8951::Error IT8951_IO::spi_send(uint16_t const data)
@@ -151,10 +159,15 @@ IT8951::Error IT8951_IO::spi_send(uint16_t const data)
 
   size_t const TX_RF_BUF_NUM_WORDS = sizeof(tx_buf) / 2;
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wignored-qualifiers"
+
   if (TX_RF_BUF_NUM_WORDS != _spi.transfer((uint8_t const * const)&tx_buf, (uint8_t *)&rx_buf, TX_RF_BUF_NUM_WORDS))
     return Error::Spi;
   else
     return Error::None;
+
+#pragma GCC diagnostic pop
 }
 
 IT8951::Error IT8951_IO::spi_recv(uint16_t & data)
@@ -164,8 +177,13 @@ IT8951::Error IT8951_IO::spi_recv(uint16_t & data)
 
   size_t const TX_RF_BUF_NUM_WORDS = sizeof(tx_buf) / 2;
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wignored-qualifiers"
+
   if (TX_RF_BUF_NUM_WORDS != _spi.transfer((uint8_t const * const)&tx_buf, (uint8_t *)&rx_buf, TX_RF_BUF_NUM_WORDS))
     return Error::Spi;
+
+#pragma GCC diagnostic pop
 
   data = htons(rx_buf);
 

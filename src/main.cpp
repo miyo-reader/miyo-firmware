@@ -24,6 +24,8 @@ extern "C" {
 #include "stm32l4xx_hal.h"
 }
 
+#include <miyo-splash.h>
+
 #include <hal++/Delay.h>
 #include <hal++/SPI.hpp>
 #include <hal++/UART.hpp>
@@ -41,6 +43,8 @@ extern "C" {
  **************************************************************************************/
 
 static void SystemClock_Config();
+
+static void system_panic(char const * fmt,  ...);
 
 constexpr SPI_TypeDef * Spi_1() { return SPI1; }
 constexpr GPIO_TypeDef * Port_A() { return GPIOA; }
@@ -158,6 +162,49 @@ int main(void)
   uart1.init();
   it8951_io.init();
 
+  miyo::driver::IT8951::Error it8951_rc = miyo::driver::IT8951::Error::None;
+
+  uint16_t lisar_reg_val = 0;
+  std::tie (it8951_rc, lisar_reg_val) = it8951.readRegister(miyo::driver::IT8951::LISAR);
+  if (it8951_rc != miyo::driver::IT8951::Error::None)
+    system_panic("it8951.readRegister failed with %d", static_cast<int>(it8951_rc));
+  DBG_INFO("LISAR = 0x%04x", lisar_reg_val);
+
+  miyo::driver::IT8951::DeviceInfo device_info;
+  std::tie (it8951_rc, device_info) = it8951.getDeviceInfo();
+  if (it8951_rc != miyo::driver::IT8951::Error::None)
+   system_panic("it8951.getDeviceInfo failed with %d", static_cast<int>(it8951_rc));
+  uint32_t const IT8951_IMG_BUF_BASE_ADDR = (static_cast<uint32_t>(device_info.img_buf_address_high) << 16)| device_info.img_buf_address_low;
+  DBG_INFO("Device Info:\n      Width:  %d px\n      Height: %d px\n      ImageBuffer : 0x%08X\n      FW Version  : %s\n      LUT Version : %s",
+              device_info.panel_width,
+              device_info.panel_height,
+              IT8951_IMG_BUF_BASE_ADDR,
+              device_info.fw_version,
+              device_info.lut_version);
+
+  it8951_rc = it8951.setImageBufferBaseAddr(IT8951_IMG_BUF_BASE_ADDR);
+  if (it8951_rc != miyo::driver::IT8951::Error::None)
+    system_panic("it8951.setImageBufferBaseAddr failed with %d", static_cast<int>(it8951_rc));
+
+  it8951_rc = it8951.loadImageAreaStart(miyo::driver::IT8951::IT8951::EndianType::Little,
+                                        miyo::driver::IT8951::IT8951::PixelMode::Mode_4_BPP,
+                                        miyo::driver::IT8951::IT8951::RotateMode::NoRotation,
+                                        0 /* x_start */,
+                                        0 /* y_start */,
+                                        device_info.panel_width,
+                                        device_info.panel_height);
+  if (it8951_rc != miyo::driver::IT8951::Error::None)
+    system_panic("it8951.loadImageAreaStart failed with %d", static_cast<int>(it8951_rc));
+
+  it8951_rc = it8951.loadImage(MIYO_SPLASH, sizeof(MIYO_SPLASH));
+  if (it8951_rc != miyo::driver::IT8951::Error::None)
+    system_panic("it8951.loadImage failed with %d", static_cast<int>(it8951_rc));
+
+  it8951_rc = it8951.loadImageEnd();
+  if (it8951_rc != miyo::driver::IT8951::Error::None)
+    system_panic("it8951.loadImageEnd failed with %d", static_cast<int>(it8951_rc));
+
+
   for(;;)
   {
     led_green.set();
@@ -166,27 +213,30 @@ int main(void)
     HAL_Delay(100);
 
     DBG_INFO("Hello Miyo!");
-
-    uint16_t data = 0;
-    it8951_io.command(miyo::driver::IT8951::Command::REG_RD);
-    it8951_io.write(0x0208);
-    it8951_io.read(data);
-    DBG_INFO("LISAR = 0x%04x", data);
-
-    miyo::driver::IT8951::DeviceInfo device_info;
-    it8951.getDeviceInfo(device_info);
-    DBG_INFO("Device Info:\n      Width:  %d px\n      Height: %d px\n      ImageBuffer : 0x%08X\n      FW Version  : %s\n      LUT Version : %s",
-             device_info.panel_width,
-             device_info.panel_height,
-             (static_cast<uint32_t>(device_info.img_buf_address_high) << 16)| device_info.img_buf_address_low,
-             device_info.fw_version,
-             device_info.lut_version);
   }
 }
 
 /**************************************************************************************
  * FUNCTION DEFINITION
  **************************************************************************************/
+
+void system_panic(char const * fmt,  ...)
+{
+  DBG_ERROR("system_panic:");
+
+  va_list args;
+  va_start(args, fmt);
+  DBG_ERROR(fmt, args);
+  va_end(args);
+
+  for (;;)
+  {
+    led_green.set();
+    HAL_Delay(50);
+    led_green.clr();
+    HAL_Delay(50);
+  }
+}
 
 /**
   * @brief  System Clock Configuration
@@ -209,9 +259,12 @@ int main(void)
   */
 void SystemClock_Config(void)
 {
-  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct;
+  RCC_OscInitTypeDef RCC_OscInitStruct;
   
+  memset(&RCC_ClkInitStruct, 0, sizeof(RCC_ClkInitStruct));
+  memset(&RCC_OscInitStruct, 0, sizeof(RCC_OscInitStruct));
+
   /* Enable voltage range 1 boost mode for frequency above 80 Mhz */
   __HAL_RCC_PWR_CLK_ENABLE();
   HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1_BOOST);

@@ -36,16 +36,18 @@ target_sources(${MIYO_READER}
   src/hal++/Delay.cpp
 
   src/main.cpp
-  src/stm32l4xx_hal_msp.c
-  src/stm32l4xx_it.c
-  src/syscalls.c
-  src/sysmem.c
-  src/system_stm32l4xx.c
+  src/stm32l4xx_hal_msp.cpp
+  src/stm32l4xx_it.cpp
+  src/syscalls.cpp
+  src/sysmem.cpp
+  src/system_stm32l4xx.cpp
 
   startup/startup_stm32l4s5aiix.s
 )
 ##########################################################################
 target_compile_features(${MIYO_READER} PRIVATE cxx_std_17)
+##########################################################################
+target_compile_options(${MIYO_READER} PRIVATE -Wall -Wextra -Wpedantic -Wno-register)
 ##########################################################################
 target_compile_definitions(${MIYO_READER} PRIVATE DBG_ENABLE_ERROR)
 target_compile_definitions(${MIYO_READER} PRIVATE DBG_ENABLE_WARNING)
@@ -69,6 +71,12 @@ set_target_properties(
    -mfloat-abi=hard \
    -mfpu=fpv4-sp-d16 \
    -Wl,--gc-sections"
+)
+##########################################################################
+add_custom_command(TARGET ${MIYO_READER}
+  POST_BUILD
+  COMMAND arm-none-eabi-size bin/${MIYO_READER}
+  COMMENT "Code size information:"
 )
 ##########################################################################
 add_custom_target(upload

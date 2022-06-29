@@ -57,14 +57,46 @@ public:
 
   IT8951(IT8951_IO & io);
 
+  enum class EndianType : uint16_t
+  {
+    Little = 0,
+    Big = 1,
+  };
+  enum class PixelMode : uint16_t
+  {
+    Mode_2_BPP = 0,
+    Mode_3_BPP = 1,
+    Mode_4_BPP = 2,
+    Mode_8_BPP = 3,
+  };
+  enum class RotateMode : uint16_t
+  {
+    NoRotation = 0,
+    Rotate_90  = 1,
+    Rotate_180 = 2,
+    Rotate_270 = 3,
+  };
 
-  Error getDeviceInfo(DeviceInfo & dev_info);
 
+  std::tuple<Error, DeviceInfo> getDeviceInfo();
+  Error                         setImageBufferBaseAddr(uint32_t const img_buf_base_addr);
+  Error                         loadImageAreaStart(EndianType const endian_type,
+                                                   PixelMode const pixel_mode,
+                                                   RotateMode const rotate_mode,
+                                                   uint16_t const x_start,
+                                                   uint16_t const y_start,
+                                                   uint16_t const width,
+                                                   uint16_t const height);
+  Error                         loadImage(uint8_t const * img, size_t const num_bytes);
+  Error                         loadImageEnd();
+
+
+  std::tuple<Error, uint16_t> readRegister (uint16_t const reg_addr);
+  Error                       writeRegister(uint16_t const reg_addr, uint16_t const reg_val);
 
 private:
 
   IT8951_IO & _io;
-
 };
 
 /**************************************************************************************
