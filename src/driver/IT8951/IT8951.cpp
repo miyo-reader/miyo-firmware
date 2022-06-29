@@ -112,10 +112,11 @@ Error IT8951::loadImageAreaStart(EndianType const endian_type,
 
 Error IT8951::loadImage(uint8_t const * img, size_t const num_bytes)
 {
-  for (size_t b = 0; b < num_bytes; b += 2) {
-    uint16_t const arg = static_cast<uint16_t>(img[b]) << 8 | img[b+1];
-    CHECK_RETURN_VAL(_io.write(arg));
-  }
+  uint16_t const * p_img = reinterpret_cast<uint16_t const *>(img);
+
+  for (size_t b = 0; b < num_bytes; b += sizeof(uint16_t), p_img++)
+    CHECK_RETURN_VAL(_io.write(*p_img));
+
   return Error::None;
 }
 
