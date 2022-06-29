@@ -87,6 +87,7 @@ public:
                                                    uint16_t const y_start,
                                                    uint16_t const width,
                                                    uint16_t const height);
+  Error                         loadImage(uint8_t const * img, size_t const num_bytes);
   Error                         loadImageEnd();
 
 

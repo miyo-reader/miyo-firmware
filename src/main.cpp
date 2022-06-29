@@ -24,6 +24,8 @@ extern "C" {
 #include "stm32l4xx_hal.h"
 }
 
+#include <miyo-splash.h>
+
 #include <hal++/Delay.h>
 #include <hal++/SPI.hpp>
 #include <hal++/UART.hpp>
@@ -194,7 +196,9 @@ int main(void)
   if (it8951_rc != miyo::driver::IT8951::Error::None)
     system_panic("it8951.loadImageAreaStart failed with %d", static_cast<int>(it8951_rc));
 
-  /* TODO: Actually load image. */
+  it8951_rc = it8951.loadImage(MIYO_SPLASH, sizeof(MIYO_SPLASH));
+  if (it8951_rc != miyo::driver::IT8951::Error::None)
+    system_panic("it8951.loadImage failed with %d", static_cast<int>(it8951_rc));
 
   it8951_rc = it8951.loadImageEnd();
   if (it8951_rc != miyo::driver::IT8951::Error::None)
